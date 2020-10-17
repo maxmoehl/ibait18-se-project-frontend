@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.ec1f5d8c228da58a3a13cf6b92155a5e.js"
+  "/precache-manifest.8a58d38f393bc01b11bc3f32f5ff29fe.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "ibait18-se-project-frontend"});

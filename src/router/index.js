@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
 import Register from "@/views/Register";
+import Confirmation from "@/views/Confirmation";
 
 Vue.use(VueRouter);
 
@@ -15,6 +16,12 @@ const routes = [
     path: '/register/:timeSlotId',
     name: 'register',
     component: Register,
+    props: true
+  },
+  {
+    path: '/confirmation/:bookingCode',
+    name: 'confirmation',
+    component: Confirmation,
     props: true
   }
 ]

@@ -42,7 +42,7 @@ export default {
   data: () => {
     return {
       selectedDate: utils.convertToDate(new Date(Date.now()))
-    }
+    };
   },
   asyncComputed: {
     timeSlots: {
@@ -57,8 +57,8 @@ export default {
   },
   methods: {
     disabledDates(date) {
-      let d = new Date(Date.parse(date))
-      let today = new Date(Date.now())
+      let d = new Date(Date.parse(date));
+      let today = new Date(Date.now());
       today.setHours(0, 0, 0, 0);
       return d < today;
     },
@@ -66,7 +66,6 @@ export default {
       return utils.convertToClockTime(new Date(seconds));
     },
     openRegistration(timeSlotId) {
-      console.log(timeSlotId)
       this.$router.push({name: 'register', params: {timeSlotId: timeSlotId}});
     }
   }
