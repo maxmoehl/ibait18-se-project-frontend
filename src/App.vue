@@ -1,10 +1,13 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    <md-app md-mode="reveal">
+      <md-app-toolbar class="md-primary">
+        <span class="md-title">Corona Registrierung</span>
+      </md-app-toolbar>
+      <md-app-content>
+        <router-view></router-view>
+      </md-app-content>
+    </md-app>
   </div>
 </template>
 

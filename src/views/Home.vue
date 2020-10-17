@@ -1,18 +1,31 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <TimeSlotSelection></TimeSlotSelection>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import TimeSlotSelection from "@/components/TimeSlotSelection";
 
 export default {
   name: 'Home',
-  components: {
-    HelloWorld
+  components: {TimeSlotSelection},
+  data: () => {
+    return {
+      selectedDate: null
+    };
+  },
+  computed: {
+    currentEvents() {
+      if (this.selectedDate === null) {
+        return null;
+      }
+      return this.events;
+    }
   }
 }
 </script>
+
+<style scoped>
+
+</style>
