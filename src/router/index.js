@@ -1,8 +1,11 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Home from '../views/Home.vue';
+import Home from '@/views/Home.vue';
 import Register from "@/views/Register";
 import Confirmation from "@/views/Confirmation";
+import Login from "@/views/Login";
+import Admin from "@/views/Admin";
+import FAQ from "@/views/FAQ";
 
 Vue.use(VueRouter);
 
@@ -23,6 +26,21 @@ const routes = [
     name: 'confirmation',
     component: Confirmation,
     props: true
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: Login
+  },
+  {
+    path: '/admin',
+    name: 'admin',
+    component: Admin
+  },
+  {
+    path: '/faq',
+    name: 'faq',
+    component: FAQ
   }
 ]
 

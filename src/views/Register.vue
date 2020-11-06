@@ -1,15 +1,17 @@
 <template>
   <div class="register">
-    <register-form :time-slot-id="timeSlotId"></register-form>
+    <registration-management :time-slot-id="timeSlotId"></registration-management>
+    <registration-form></registration-form>
   </div>
 </template>
 
 <script>
-import RegisterForm from "@/components/RegisterForm";
+import RegistrationForm from "@/components/RegistrationForm";
+import RegistrationManagement from "@/components/RegistrationManagement";
 
 export default {
   name: "Register",
-  components: {RegisterForm},
+  components: {RegistrationManagement, RegistrationForm},
   props: {
     timeSlotId: String
   }

@@ -1,9 +1,11 @@
 /**
- * Converts a Date to string of the format yyyy-MM-dd
+ * Converts a Date to string of the format yyyy-MM-dd or dd.MM.yyyy
+ * depending on sep(arator)
  *
  * @param date {Date}
+ * @param sep {String} (-|.) separator, default is '-'
  */
-function convertToDate(date) {
+function convertToDate(date, sep) {
     let y = `${date.getFullYear()}`;
     let m = `${date.getMonth() + 1}`;
     if (m.length === 1) {
@@ -13,7 +15,11 @@ function convertToDate(date) {
     if (d.length === 1) {
         d = '0' + d;
     }
-    return `${y}-${m}-${d}`
+    if (sep === '.') {
+        return `${d}.${m}.${y}`;
+    } else {
+        return `${y}-${m}-${d}`;
+    }
 }
 
 /**
