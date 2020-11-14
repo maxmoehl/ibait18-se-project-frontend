@@ -5,10 +5,10 @@
     </md-datepicker>
     <md-table v-model="timeSlots" md-card>
       <md-table-row slot="md-table-row" slot-scope="{ item }" @click="openRegistration(item.timeSlotId)">
-        <md-table-cell md-label="Zeitraum" class="text-align-left">
+        <md-table-cell md-label="Zeitraum">
           {{ getClockTime(item.startDate) }} - {{ getClockTime(item.endDate) }}
         </md-table-cell>
-        <md-table-cell md-label="Freie Plätze" class="text-align-left">
+        <md-table-cell md-label="Freie Plätze">
           {{ item.totalSlots - item.reservedSlots }}
         </md-table-cell>
       </md-table-row>
@@ -17,7 +17,6 @@
 </template>
 
 <script>
-import api from '../services/api';
 import utils from '../services/utils';
 
 export default {
@@ -53,7 +52,5 @@ export default {
 </script>
 
 <style scoped>
-.text-align-left {
-  text-align: left;
-}
+
 </style>

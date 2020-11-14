@@ -89,7 +89,7 @@
 </template>
 
 <script>
-import {email, maxLength, minLength, required, requiredIf, requiredUnless} from 'vuelidate/lib/validators'
+import {email, maxLength, minLength, required, requiredIf} from 'vuelidate/lib/validators'
 
 export default {
   name: "RegistrationForm",

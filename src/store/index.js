@@ -1,8 +1,10 @@
 import Vuex from "vuex";
 import Vue from "vue";
-import api from "@/services/api";
+import axios from 'axios';
 
 Vue.use(Vuex);
+
+axios.defaults.headers.Accept = 'application/json';
 
 export default new Vuex.Store({
     state: {
@@ -42,8 +44,11 @@ export default new Vuex.Store({
     },
     actions: {
         loadTimeSlots: context => {
-            api.getTimeSlots().then(timeSlots => {
-                context.commit('setTimeslots', timeSlots);
+            axios({
+                url: '/api/timeslots/',
+                method: 'get'
+            }).then(res => {
+                context.commit('setTimeslots', res.data);
             });
         }
     }

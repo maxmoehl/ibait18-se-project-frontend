@@ -2,7 +2,7 @@
   <md-content>
     <div class="faq" v-for="q in questions" :key="q.id">
       <md-content class="md-raised" @click="q.open = true">
-        <md-card-content class="text-align-left">
+        <md-card-content>
           {{q.title}}
         </md-card-content>
       </md-content>
@@ -94,7 +94,5 @@ export default {
 </script>
 
 <style scoped>
-.text-align-left {
-  text-align: left;
-}
+
 </style>

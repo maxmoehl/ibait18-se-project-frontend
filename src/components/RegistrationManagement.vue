@@ -9,7 +9,7 @@
 
     <md-card v-for="(guest, index) in guests" :key="guest.name">
       <md-card-header>
-        <div class="text-align-left" @click="deleteGuest(index)">
+        <div @click="deleteGuest(index)">
           {{ index + 1 }}. {{ guest.name }}
           <md-icon style="float: right">close</md-icon>
         </div>
@@ -79,10 +79,6 @@ export default {
 </script>
 
 <style scoped>
-.text-align-left {
-  text-align: left;
-}
-
 .description {
   padding: 0 10px;
 }

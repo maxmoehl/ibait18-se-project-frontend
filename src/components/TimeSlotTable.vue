@@ -1,34 +1,22 @@
 <template>
-  <div class="time-slot-table">
-    <div class="md-layout">
-      <div class="day md-layout-item" v-for="day in week">
-        <div @click="openEditDialog" class="time-slot-card">
-          <TimeSlotCard v-for="timeSlot in day" :start-time="timeSlot.startDate" :end-time="timeSlot.endDate"
-                        :reserved-slots="timeSlot.reservedSlots" :total-slots="timeSlot.totalSlots"
-                        :key="timeSlot.timeSlotId"></TimeSlotCard>
-        </div>
-      </div>
-    </div>
-    <md-dialog :md-active.sync="editDialogOpen">
-      <md-dialog-title>
-        Zeit Slot bearbeiten
-      </md-dialog-title>
-      <md-dialog-content>
-        <md-field>
-
-        </md-field>
-      </md-dialog-content>
-      <md-dialog-actions>
-        <md-button class="md-primary" @click="closeEditDialog">Cancel</md-button>
-        <md-button class="md-primary" @click="closeEditDialog">Save</md-button>
-      </md-dialog-actions>
-    </md-dialog>
-  </div>
+  <md-table v-model="timeSlots" md-card>
+    <md-table-row slot="md-table-row" slot-scope="{ item }" @click="openEditDialog(item.timeSlotId)">
+      <md-table-cell md-label="Datum">
+        {{ convertToDate(item.startDate) }}
+      </md-table-cell>
+      <md-table-cell md-label="Zeitraum">
+        {{ getClockTime(item.startDate) }} - {{ getClockTime(item.endDate) }}
+      </md-table-cell>
+      <md-table-cell md-label="Freie Plätze">
+        {{ item.reservedSlots }} / {{ item.totalSlots }}
+      </md-table-cell>
+    </md-table-row>
+  </md-table>
 </template>
 
 <script>
-import api from '@/services/api'
 import TimeSlotCard from "@/components/TimeSlotCard";
+import utils from "@/services/utils";
 
 export default {
   name: "TimeSlotTable",
@@ -43,12 +31,9 @@ export default {
       }
     };
   },
-  asyncComputed: {
-    week: {
-      async get() {
-        return api.getWeek();
-      },
-      default: []
+  computed: {
+    timeSlots() {
+      return this.$store.state.timeSlots;
     }
   },
   methods: {
@@ -57,13 +42,17 @@ export default {
     },
     closeEditDialog() {
       this.editDialogOpen = false;
-    }
+    },
+    convertToDate(date) {
+      return utils.convertToDate(new Date(date), '.');
+    },
+    getClockTime(seconds) {
+      return utils.convertToClockTime(new Date(seconds));
+    },
   }
 }
 </script>
 
 <style scoped>
-.time-slot-card {
-  cursor: pointer;
-}
+
 </style>
