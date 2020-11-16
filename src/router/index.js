@@ -6,6 +6,7 @@ import Confirmation from "@/views/Confirmation";
 import Login from "@/views/Login";
 import Admin from "@/views/Admin";
 import FAQ from "@/views/FAQ";
+import Privacy from "@/views/Privacy";
 
 Vue.use(VueRouter);
 
@@ -41,6 +42,11 @@ const routes = [
     path: '/faq',
     name: 'faq',
     component: FAQ
+  },
+  {
+    path: '/privacy',
+    name: 'privacy',
+    component: Privacy
   }
 ]
 

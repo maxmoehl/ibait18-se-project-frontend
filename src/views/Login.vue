@@ -1,5 +1,7 @@
 <template>
-  <LoginForm></LoginForm>
+  <div class="login">
+    <LoginForm></LoginForm>
+  </div>
 </template>
 
 <script>
@@ -11,5 +13,8 @@ export default {
 </script>
 
 <style scoped>
-
+.login {
+  max-width: 600px;
+  margin: auto;
+}
 </style>

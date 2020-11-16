@@ -94,7 +94,8 @@ import {email, maxLength, minLength, required, requiredIf} from 'vuelidate/lib/v
 export default {
   name: "RegistrationForm",
   props: {
-    mdActive: false
+    mdActive: false,
+    timeSlotId: null
   },
   data: function () {
     return {
@@ -203,13 +204,14 @@ export default {
 
       let guest = {
         name: this.form.name,
-        phoneNumber: this.form.phoneNumber,
+        phone: this.form.phoneNumber,
         email: this.form.email,
         addressLineOne: this.form.addressLineOne,
         addressLineTwo: this.form.addressLineTwo,
         city: this.form.city,
         zipCode: this.form.zipCode,
-        countryCode: this.form.countryCode
+        country: this.form.countryCode,
+        timeSlot: this.timeSlotId
       }
       if (this.form.addressSelection > -1) {
         let referenceGuest = this.$store.state.guests[this.form.addressSelection];
@@ -217,7 +219,7 @@ export default {
         guest.addressLineTwo = referenceGuest.addressLineTwo;
         guest.city = referenceGuest.city;
         guest.zipCode = referenceGuest.zipCode;
-        guest.countryCode = referenceGuest.countryCode;
+        guest.country = referenceGuest.country;
       }
       this.$store.commit('addGuest', guest);
       this.closeDialog()

@@ -1,25 +1,27 @@
 <template>
-  <md-card>
-    <md-card-header>
-      <div class="md-title">Danke für Ihre Reservierung.</div>
-    </md-card-header>
-
-    <md-card-content>
-      Eine Kopie dieser Bestätigung wurde an [EMAIL-ADRESSE] gesendet. Bitte bringen Sie den Bestätigungscode (QR-Code)
+  <div>
+    <div class="md-title">Danke für Ihre Reservierung.</div>
+    <p>
+      Eine Kopie dieser Bestätigung wurde an Ihre E-Mail Adresse(n) gesendet. Bitte bringen Sie den Bestätigungscode (QR-Code)
       unbedingt bei Ihrem Besuch mit, damit Ihr Einlass garantiert ist. Wir freuen uns, Sie bald bei uns begrüßen zu
       dürfen.
+    </p>
+    <p>
       Bitte beachten Sie bei Ihrem Besuch jederzeit die geltenden Hygienevorschriften und halten Sie sich an die
       Anweisungen des Personals vor Ort. Weitere Hinweise zur Reservierung und Ihrem Besuch bei uns erhalten Sie in
       unseren Häufig gestellten Fragen (FAQ).
-
+    </p>
+    <p>
       Bitte speichern Sie den Buchungscode und halten Sie ihn bei Ankunft bereit damit ein Mitarbeiter
       ihn scannen kann.
+    </p>
+    <div class="bookingCode">
       <div class="qrcode">
         <canvas id="qrcode"></canvas>
       </div>
       <small>{{this.bookingCode}}</small>
-    </md-card-content>
-  </md-card>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -32,24 +34,16 @@ export default {
   },
   mounted() {
     let canvas = document.getElementById('qrcode');
-    console.log(this.bookingCode)
     QRCode.toCanvas(canvas, this.bookingCode, e => {
       if (e) console.error(e);
-      console.log('generated qrcode');
     });
-  },
-  asyncComputed: {
-    booking: {
-      async get() {
-
-      }
-    }
   }
 }
 </script>
 
 <style scoped>
-.qrcode {
+.bookingCode {
   margin-top: 20px;
+  text-align: center;
 }
 </style>

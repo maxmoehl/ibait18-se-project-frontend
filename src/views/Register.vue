@@ -19,5 +19,8 @@ export default {
 </script>
 
 <style scoped>
-
+.register {
+  max-width: 600px;
+  margin: auto;
+}
 </style>

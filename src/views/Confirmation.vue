@@ -1,5 +1,7 @@
 <template>
-  <RegistrationConfirmation :booking-code="bookingCode"></RegistrationConfirmation>
+  <div class="confirmation">
+    <RegistrationConfirmation :booking-code="bookingCode"></RegistrationConfirmation>
+  </div>
 </template>
 
 <script>
@@ -14,5 +16,8 @@ export default {
 </script>
 
 <style scoped>
-
+.confirmation {
+  max-width: 600px;
+  margin: auto;
+}
 </style>

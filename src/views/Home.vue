@@ -14,5 +14,8 @@ export default {
 </script>
 
 <style scoped>
-
+.home {
+  max-width: 600px;
+  margin: auto;
+}
 </style>

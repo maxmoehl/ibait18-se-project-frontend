@@ -4,12 +4,12 @@
       <label>Tag wählen</label>
     </md-datepicker>
     <md-table v-model="timeSlots" md-card>
-      <md-table-row slot="md-table-row" slot-scope="{ item }" @click="openRegistration(item.timeSlotId)">
+      <md-table-row slot="md-table-row" slot-scope="{ item }" @click="openRegistration(item._id)">
         <md-table-cell md-label="Zeitraum">
           {{ getClockTime(item.startDate) }} - {{ getClockTime(item.endDate) }}
         </md-table-cell>
         <md-table-cell md-label="Freie Plätze">
-          {{ item.totalSlots - item.reservedSlots }}
+          {{ item.peopleCount - item.reservations }}
         </md-table-cell>
       </md-table-row>
     </md-table>
@@ -30,7 +30,7 @@ export default {
     timeSlots() {
       return this.$store.getters.getTimeSlotsByDate(new Date(Date.parse(this.selectedDate)))
           .filter(t => {
-            return t.reservedSlots < t.totalSlots && t.startDate > Date.now();
+            return t.reservations < t.peopleCount && t.startDate > Date.now();
           })
     }
   },

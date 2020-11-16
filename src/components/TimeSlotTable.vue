@@ -7,8 +7,8 @@
       <md-table-cell md-label="Zeitraum">
         {{ getClockTime(item.startDate) }} - {{ getClockTime(item.endDate) }}
       </md-table-cell>
-      <md-table-cell md-label="Freie Plätze">
-        {{ item.reservedSlots }} / {{ item.totalSlots }}
+      <md-table-cell md-label="Reservierungen">
+        {{ item.reservations }} / {{ item.peopleCount }}
       </md-table-cell>
     </md-table-row>
   </md-table>

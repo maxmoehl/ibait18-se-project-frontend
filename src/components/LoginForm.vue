@@ -17,13 +17,15 @@
       </md-card-content>
 
       <md-card-actions>
-        <md-button @click="login()" class="md-primary">Anmelden</md-button>
+        <md-button @click="login" class="md-primary">Anmelden</md-button>
       </md-card-actions>
     </md-card>
   </form>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: "LoginForm",
   data: function () {
@@ -34,17 +36,28 @@ export default {
       }
     };
   },
+  beforeCreate() {
+    this.$store.dispatch('updateLoginState');
+    if (this.$store.state.loggedIn) {
+      this.$router.push({name: 'admin'});
+    }
+  },
   methods: {
     login() {
-
+      console.log('foo')
+      axios({
+        url: `/api/login/?email=${this.form.email}&password=${this.form.password}`,
+        method: 'get'
+      }).then(res => {
+        axios.defaults.headers.Authorization = `Bearer ${res.data.token}`;
+        this.$store.dispatch('updateLoginState');
+        this.$router.push({name: 'admin'});
+      });
     }
   }
 }
 </script>
 
 <style scoped>
-form {
-  max-width: 500px;
-  margin: auto;
-}
+
 </style>

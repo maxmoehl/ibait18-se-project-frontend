@@ -9,7 +9,8 @@ axios.defaults.headers.Accept = 'application/json';
 export default new Vuex.Store({
     state: {
         guests: [],
-        timeSlots: []
+        timeSlots: [],
+        loggedIn: false
     },
     mutations: {
         setTimeslots: (state, timeSlots) => {
@@ -20,12 +21,15 @@ export default new Vuex.Store({
         },
         deleteGuest: (state, index) => {
             state.guests.splice(index, 1);
+        },
+        setLoginState: (state, loginState) => {
+            state.loggedIn = loginState;
         }
     },
     getters: {
         getTimeSlot: state => timeSlotId => {
             for (let i = 0; i < state.timeSlots.length; i++) {
-                if (state.timeSlots[i].timeSlotId === timeSlotId) {
+                if (state.timeSlots[i]._id === timeSlotId) {
                     return state.timeSlots[i];
                 }
             }
@@ -43,13 +47,16 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        loadTimeSlots: context => {
-            axios({
-                url: '/api/timeslots/',
-                method: 'get'
-            }).then(res => {
-                context.commit('setTimeslots', res.data);
-            });
-        }
+        loadTimeSlots: context => axios({
+            url: '/api/timeslots/',
+            method: 'get'
+        }).then(res => {
+            context.commit('setTimeslots', res.data);
+        }),
+        updateLoginState: context => axios({
+            url: '/api/login/check',
+            method: 'get'
+        }).then(() => context.commit('setLoginState', true),
+            () => context.commit('setLoginState', false))
     }
 });

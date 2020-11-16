@@ -25,7 +25,7 @@
       </md-card>
     </div>
 
-    <RegistrationForm :md-active="registrationDialogOpen" @close="registrationDialogOpen = false"/>
+    <RegistrationForm :time-slot-id="timeSlotId" :md-active="registrationDialogOpen" @close="registrationDialogOpen = false"/>
 
     <!-- TODO Add a dialog to confirm deletion of a guest -->
 
@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import utils from "@/services/utils";
 import RegistrationForm from "@/components/RegistrationForm";
 
@@ -67,8 +68,15 @@ export default {
   },
   methods: {
     async registerReservation() {
-      // Call the api and create the reservation, that endpoint should also return the booking code
-      await this.$router.push({name: 'confirmation', params: {bookingCode: 'ABC123'}});
+      axios({
+        url: '/api/reservations/',
+        method: 'post',
+        data: this.$store.state.guests
+      }).then(response => {
+        return this.$router.push({name: 'confirmation', params: {bookingCode: response.data.bookingCode}});
+      }, reason => {
+        console.warn(reason);
+      })
     },
     deleteGuest(guestId) {
       console.log(guestId)

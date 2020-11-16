@@ -37,6 +37,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import {required, minValue} from 'vuelidate/lib/validators'
 
 const timeRegex = new RegExp(/^[0-2][0-9]:[0-5][0-9]$/).compile();
@@ -78,11 +79,25 @@ export default {
   },
   methods: {
     addTimeSlot() {
-      // TODO store new timeslot
+      axios({
+        url: '/api/timeslots/',
+        method: 'post',
+        data: {
+          startDate: Date.parse(`${this.createDialogForm.date}T${this.createDialogForm.startTime}`),
+          endDate: Date.parse(`${this.createDialogForm.date}T${this.createDialogForm.endTime}`),
+          peopleCount: this.createDialogForm.slotCount
+        }
+      }).then(() => this.$store.dispatch('loadTimeSlots'), reason => {
+        console.warn(reason);
+        // TODO something like a popup to inform the user what went wrong
+      })
       this.closeCreateTimeSlotDialog();
     },
     closeCreateTimeSlotDialog() {
-      // TODO reset form
+      this.createDialogForm.date = '';
+      this.createDialogForm.startTime = '';
+      this.createDialogForm.endTime = '';
+      this.createDialogForm.slotCount = null;
       this.createDialogOpen = false;
     }
   }

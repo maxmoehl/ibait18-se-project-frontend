@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --dest ../ibait18-se-project/public"
+    "build": "vue-cli-service build --dest ../ibait18-se-project/public --mode development"
   },
   "dependencies": {
     "axios": "^0.20.0",
