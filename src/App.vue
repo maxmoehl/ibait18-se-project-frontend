@@ -73,6 +73,10 @@ export default {
 </script>
 
 <style scoped>
+.md-app {
+  min-height: 100vh;
+}
+
 .title {
   cursor: pointer;
 }
