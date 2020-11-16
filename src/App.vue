@@ -65,6 +65,7 @@ export default {
   },
   methods: {
     navTo(routeName) {
+      this.showNavigation = false;
       this.$router.push({name: routeName});
     }
   }
