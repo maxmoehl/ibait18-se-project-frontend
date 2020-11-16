@@ -44,7 +44,6 @@ export default {
   },
   methods: {
     login() {
-      console.log('foo')
       axios({
         url: `/api/login/?email=${this.form.email}&password=${this.form.password}`,
         method: 'get'
