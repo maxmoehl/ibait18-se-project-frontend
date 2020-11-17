@@ -7,7 +7,20 @@
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,500,700,400italic|Material+Icons">
     <title>Project Neowise</title>
-    <style>body{background-color: white;}/*fix for https://github.com/vuematerial/vue-material/issues/1369*/.md-app-container{transform: none !important;}</style>
+    <style>
+        body {
+            background-color: white;
+        }
+
+        /*fix for https://github.com/vuematerial/vue-material/issues/1369*/
+        .md-app-container {
+            transform: none !important;
+        }
+
+        @font-face {
+            font-display: swap
+        }
+    </style>
 </head>
 <body>
 <noscript>

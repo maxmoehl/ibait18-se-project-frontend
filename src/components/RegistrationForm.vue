@@ -191,7 +191,7 @@ export default {
       if (this.$v.$invalid) {
         return;
       }
-
+      this.$v.$reset();
       let guest = {
         name: this.form.name,
         phone: this.form.phoneNumber,

@@ -92,7 +92,7 @@ export default {
 }
 
 .send-guests {
-  z-index: 10;
+  z-index: 1;
   position: fixed;
   bottom: 10px;
   right: 10px;

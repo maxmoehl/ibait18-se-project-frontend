@@ -17,26 +17,26 @@
         Neues Zeitfenster anlegen
       </md-dialog-title>
       <md-dialog-content>
-        <md-datepicker v-model="createDialogForm.date">
+        <md-datepicker v-model="createDialogForm.date" :md-disabled-dates="disabledDates">
           <label>Tag wählen</label>
         </md-datepicker>
         <md-field :class="getValidationClass('startTime')">
           <label for="startTime">Start-Zeit</label>
           <md-input id="startTime" name="startTime" v-model="createDialogForm.startTime"/>
-          <span class="md-error" v-if="!$v.createDialog.startTime.required">Bitte geben Sie eine Start-Zeit an</span>
-          <span class="md-error" v-else-if="!$v.createDialog.startTime.mustBeTime">Ungültiges Format</span>
+          <span class="md-error" v-if="!$v.createDialogForm.startTime.required">Bitte geben Sie eine Start-Zeit an</span>
+          <span class="md-error" v-else-if="!$v.createDialogForm.startTime.mustBeTime">Ungültiges Format</span>
         </md-field>
         <md-field :class="getValidationClass('endTime')">
           <label for="endTime">End-Zeit</label>
           <md-input id="endTime" name="endTime" v-model="createDialogForm.endTime"/>
-          <span class="md-error" v-if="!$v.createDialog.endTime.required">Bitte geben Sie eine End-Zeit an</span>
-          <span class="md-error" v-else-if="!$v.createDialog.endTime.mustBeTime">Ungültiges Format</span>
+          <span class="md-error" v-if="!$v.createDialogForm.endTime.required">Bitte geben Sie eine End-Zeit an</span>
+          <span class="md-error" v-else-if="!$v.createDialogForm.endTime.mustBeTime">Ungültiges Format</span>
         </md-field>
-        <md-field :class="getValidationClass('slots')">
+        <md-field :class="getValidationClass('capacity')">
           <label for="capacity">Plätze</label>
           <md-input id="capacity" name="capacity" v-model.number="createDialogForm.capacity"/>
-          <span class="md-error" v-if="!$v.createDialog.capacity.required">Bitte geben Sie eine Platzanzahl an</span>
-          <span class="md-error" v-else-if="!$v.createDialog.capacity.minValue">Mindestens ein Platz ist nötig</span>
+          <span class="md-error" v-if="!$v.createDialogForm.capacity.required">Bitte geben Sie eine Platzanzahl an</span>
+          <span class="md-error" v-else-if="!$v.createDialogForm.capacity.minValue">Mindestens ein Platz ist nötig</span>
         </md-field>
       </md-dialog-content>
       <md-dialog-actions>
@@ -50,10 +50,10 @@
 <script>
 import axios from 'axios';
 import {required, minValue} from 'vuelidate/lib/validators'
+import utils from "@/services/utils";
 
-const timeRegex = new RegExp(/^[0-2][0-9]:[0-5][0-9]$/).compile();
+const timeRegex = new RegExp(/^[0-2][0-9]:[0-5][0-9]$/);
 const mustBeTime = value => timeRegex.test(value);
-const mustBeInFuture = value => Date.parse(value) > Date.now() - 1000 * 60 * 60 * 24; // Now - 1d
 
 export default {
   name: "AdminSidebar",
@@ -61,15 +61,15 @@ export default {
     return {
       createDialogOpen: false,
       createDialogForm: {
-        date: '',
-        startTime: '',
-        endTime: '',
+        date: utils.convertToDate(new Date(Date.now()), '-'),
+        startTime: null,
+        endTime: null,
         capacity: null
       }
     }
   },
   validations: {
-    createDialog: {
+    createDialogForm: {
       startTime: {
         required,
         mustBeTime
@@ -85,11 +85,18 @@ export default {
     }
   },
   methods: {
+    disabledDates(date) {
+      let d = new Date(Date.parse(date));
+      let today = new Date(Date.now());
+      today.setHours(0, 0, 0, 0);
+      return d < today;
+    },
     addTimeSlot() {
       this.$v.$touch();
       if (this.$v.$invalid) {
         return;
       }
+      this.$v.$reset();
       axios({
         url: '/api/timeslots/',
         method: 'post',
@@ -105,9 +112,9 @@ export default {
       this.closeCreateTimeSlotDialog();
     },
     closeCreateTimeSlotDialog() {
-      this.createDialogForm.date = '';
-      this.createDialogForm.startTime = '';
-      this.createDialogForm.endTime = '';
+      this.createDialogForm.date = utils.convertToDate(new Date(Date.now()), '-');
+      this.createDialogForm.startTime = null;
+      this.createDialogForm.endTime = null;
       this.createDialogForm.slotCount = null;
       this.createDialogOpen = false;
     },
@@ -115,7 +122,7 @@ export default {
       this.$router.push({name: 'export'});
     },
     getValidationClass(fieldName) {
-      const field = this.$v.createDialog[fieldName];
+      const field = this.$v.createDialogForm[fieldName];
       if (field) {
         return {
           'md-invalid': field.$invalid && field.$dirty
