@@ -70,14 +70,6 @@
           Hiermit bestätige ich die Richtigkeit aller Angaben und erkläre mich mit der Speicherung meiner Daten,
           im Rahmen der Corona-Verordnung, einverstanden.
         </md-checkbox>
-        <br>
-        <md-checkbox v-model="form.acceptLocalStorage" class="md-primary" disabled>
-          Meine Angaben auf diesem Gerät speichern. <small>(coming soon)</small>
-        </md-checkbox>
-        <br>
-        <md-checkbox v-model="form.confirmationEmail" class="md-primary" disabled>
-          Reservierung an die angegebene E-Mail-Addresse senden. <small>(coming soon)</small>
-        </md-checkbox>
       </div>
     </md-dialog-content>
 
@@ -189,8 +181,6 @@ export default {
       this.form.zipCode = null;
       this.form.countryCode = 'DEU';
       this.form.acceptDataStorage = false;
-      this.form.acceptLocalStorage = false;
-      this.form.confirmationEmail = false;
       this.$emit('close');
     },
     /**

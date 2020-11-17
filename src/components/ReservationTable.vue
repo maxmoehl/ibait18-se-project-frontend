@@ -22,7 +22,7 @@
             </div>
             <div class="md-layout-item md-xsmall-size-100 md-small-size-20 md-medium-size-20 md-large-size-20 md-xlarge-size-20">
               <md-field>
-                <label for="city">Stadt</label>
+                <label for="city">Max. Einträge</label>
                 <md-select id="city" name="city" v-model="filter.limit">
                   <md-option :value="25">25</md-option>
                   <md-option :value="50">50</md-option>
