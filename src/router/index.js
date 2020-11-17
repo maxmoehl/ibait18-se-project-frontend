@@ -7,6 +7,7 @@ import Login from "@/views/Login";
 import Admin from "@/views/Admin";
 import FAQ from "@/views/FAQ";
 import Privacy from "@/views/Privacy";
+import Export from "@/views/Export";
 
 Vue.use(VueRouter);
 
@@ -47,6 +48,11 @@ const routes = [
     path: '/privacy',
     name: 'privacy',
     component: Privacy
+  },
+  {
+    path: '/admin/export',
+    name: 'export',
+    component: Export
   }
 ]
 

@@ -51,7 +51,7 @@
 <script>
 export default {
   beforeCreate() {
-    this.$store.dispatch('loadTimeSlots');
+    this.$store.dispatch('init');
   },
   data() {
     return {

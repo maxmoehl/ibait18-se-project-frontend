@@ -10,11 +10,15 @@ export default new Vuex.Store({
     state: {
         guests: [],
         timeSlots: [],
+        reservations: [],
         loggedIn: false
     },
     mutations: {
         setTimeslots: (state, timeSlots) => {
             state.timeSlots = timeSlots;
+        },
+        setReservations: (state, reservations) => {
+            state.reservations = reservations;
         },
         addGuest: (state, guest) => {
             state.guests.push(guest);
@@ -24,6 +28,9 @@ export default new Vuex.Store({
         },
         setLoginState: (state, loginState) => {
             state.loggedIn = loginState;
+            if (!loginState) {
+                delete localStorage.authToken;
+            }
         }
     },
     getters: {
@@ -33,7 +40,7 @@ export default new Vuex.Store({
                     return state.timeSlots[i];
                 }
             }
-            return undefined;
+            return null;
         },
         getTimeSlotsByDate: state => date => {
             return state.timeSlots.filter(d => {
@@ -41,18 +48,48 @@ export default new Vuex.Store({
                     new Date(d.startDate).getMonth() === date.getMonth() &&
                     new Date(d.startDate).getDate() === date.getDate();
             });
-        },
-        timeSlotsAvailable: state => {
-            return state.timeSlots !== undefined;
         }
     },
     actions: {
+        init: context => {
+            context.dispatch('loadTimeSlots');
+            let authToken = localStorage.authToken;
+            if (authToken !== '') {
+                axios({
+                    url: '/api/login/check/',
+                    method: 'get',
+                    headers: {
+                        Authorization: `Bearer ${authToken}`
+                    }
+                }).then(() => {
+                    axios.defaults.headers.Authorization = `Bearer ${authToken}`;
+                    context.commit('setLoginState', true);
+                    context.dispatch('loadReservations');
+                }, () => {
+                    context.commit('setLoginState', false);
+                })
+            }
+        },
+        setAuthToken: (context, authToken) => {
+            axios.defaults.headers.Authorization = `Bearer ${authToken}`;
+            localStorage.authToken = authToken;
+            context.dispatch('loadReservations');
+        },
         loadTimeSlots: context => axios({
             url: '/api/timeslots/',
             method: 'get'
         }).then(res => {
             context.commit('setTimeslots', res.data);
         }),
+        loadReservations: context => axios({
+            url: '/api/reservations/',
+            method: 'get'
+        }).then(result => context.commit('setReservations', result.data),
+            result => {
+                if (result.status === 403) {
+                    context.commit('setLoginState', false);
+                }
+            }),
         updateLoginState: context => axios({
             url: '/api/login/check',
             method: 'get'

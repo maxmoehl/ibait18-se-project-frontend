@@ -5,6 +5,11 @@
         <md-icon>add</md-icon> Neues Zeitfenster
       </md-card-header>
     </md-card>
+    <md-card @click.native="navToExports" class="create-timeslot">
+      <md-card-header>
+        <md-icon>cloud_download</md-icon> Daten exportieren
+      </md-card-header>
+    </md-card>
 
 
     <md-dialog class="new-timeslot-dialog" :md-active.sync="createDialogOpen">
@@ -99,6 +104,9 @@ export default {
       this.createDialogForm.endTime = '';
       this.createDialogForm.slotCount = null;
       this.createDialogOpen = false;
+    },
+    navToExports() {
+      this.$router.push({name: 'export'});
     }
   }
 }

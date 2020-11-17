@@ -48,8 +48,7 @@ export default {
         url: `/api/login/?email=${this.form.email}&password=${this.form.password}`,
         method: 'get'
       }).then(res => {
-        axios.defaults.headers.Authorization = `Bearer ${res.data.token}`;
-        this.$store.dispatch('updateLoginState');
+        this.$store.dispatch('setAuthToken', res.data.token);
         this.$router.push({name: 'admin'});
       });
     }
