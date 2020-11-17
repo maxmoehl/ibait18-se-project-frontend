@@ -49,6 +49,7 @@ export default {
         method: 'get'
       }).then(res => {
         this.$store.dispatch('setAuthToken', res.data.token);
+        this.$store.dispatch('loadReservations');
         this.$router.push({name: 'admin'});
       });
     }

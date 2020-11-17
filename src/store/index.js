@@ -73,7 +73,7 @@ export default new Vuex.Store({
         setAuthToken: (context, authToken) => {
             axios.defaults.headers.Authorization = `Bearer ${authToken}`;
             localStorage.authToken = authToken;
-            context.dispatch('loadReservations');
+            context.commit('setLoginState', true);
         },
         loadTimeSlots: context => axios({
             url: '/api/timeslots/',

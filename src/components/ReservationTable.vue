@@ -38,6 +38,9 @@
         </md-card-content>
 
         <md-card-actions>
+          <md-button class="md-primary" @click="">
+            Aktualisieren
+          </md-button>
           <md-button class="md-primary">
             Anwenden
           </md-button>
@@ -105,6 +108,9 @@ export default {
     clearFilters() {
       this.filter.name = '';
       this.filter.city = '';
+    },
+    updateReservations() {
+      this.$store.dispatch('loadReservations');
     }
   }
 }
