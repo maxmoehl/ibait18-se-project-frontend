@@ -7,21 +7,21 @@
     <md-dialog-content>
       <md-field :class="getValidationClass('name')">
         <label for="name">Name</label>
-        <md-input name="name" id="name" v-model="form.name"/>
+        <md-input name="name" id="name" v-model="form.name" autocomplete="name"/>
         <span class="md-error" v-if="!$v.form.name.required">Bitte geben Sie einen Namen an</span>
-        <span class="md-error" v-else-if="!$v.form.name.minlength || !$v.form.name.maxlength">Ungültiger Name</span>
+        <span class="md-error" v-else-if="!$v.form.name.minLength || !$v.form.name.maxLength">Ungültiger Name</span>
       </md-field>
       <md-field :class="getValidationClass('phoneNumber')">
         <label for="phone-number">Telefonnummer</label>
-        <md-input name="phone-number" id="phone-number" v-model="form.phoneNumber"/>
+        <md-input name="phone-number" id="phone-number" v-model="form.phoneNumber" autcomplete="tel"/>
         <span class="md-error" v-if="!$v.form.phoneNumber.required">Bitte geben Sie eine Telefonnummer an</span>
-        <span class="md-error" v-else-if="!$v.form.phoneNumber.minlength || !$v.form.phoneNumber.maxlength">Ungültige Telefonnummer</span>
+        <span class="md-error" v-else-if="!$v.form.phoneNumber.minLength || !$v.form.phoneNumber.maxLength">Ungültige Telefonnummer</span>
       </md-field>
       <md-field :class="getValidationClass('email')">
         <label for="email">E-Mail</label>
-        <md-input name="email" id="email" v-model="form.email"/>
+        <md-input name="email" id="email" v-model="form.email" autocomplete="email"/>
         <span class="md-error" v-if="!$v.form.email.required">Bitte geben Sie eine E-Mail-Adresse an</span>
-        <span class="md-error" v-else-if="!$v.form.email.minlength || !$v.form.email.maxlength">Ungültige E-Mail-Adresse</span>
+        <span class="md-error" v-else-if="!$v.form.email.minLength || !$v.form.email.maxLength">Ungültige E-Mail-Adresse</span>
       </md-field>
       <md-field class="md-layout-item">
         <label for="address-selection">Adresse</label>
@@ -36,26 +36,26 @@
       </md-field>
       <md-field :class="getValidationClass('addressLineOne')" v-if="form.addressSelection < 0">
         <label for="address-line-one">Addresszeile 1</label>
-        <md-input name="address-line-one" id="address-line-one" v-model="form.addressLineOne"/>
+        <md-input name="address-line-one" id="address-line-one" v-model="form.addressLineOne" autocomplete="address-line1"/>
         <span class="md-error" v-if="!$v.form.addressLineOne.required">Bitte geben Sie eine Addresszeile an</span>
-        <span class="md-error" v-else-if="!$v.form.addressLineOne.minlength || !$v.form.addressLineOne.maxlength">Ungültige Addresszeile</span>
+        <span class="md-error" v-else-if="!$v.form.addressLineOne.minLength || !$v.form.addressLineOne.maxLength">Ungültige Addresszeile</span>
       </md-field>
       <md-field :class="getValidationClass('addressLineTwo')" v-if="form.addressSelection < 0">
         <label for="address-line-two">Addresszeile 2</label>
-        <md-input name="address-line-two" id="address-line-two" v-model="form.addressLineTwo"/>
-        <span class="md-error" v-if="!$v.form.name.maxlength">Ungültige zweite Addresszeile</span>
+        <md-input name="address-line-two" id="address-line-two" v-model="form.addressLineTwo" autocomplete="address-line2"/>
+        <span class="md-error" v-if="!$v.form.name.maxLength">Ungültige zweite Addresszeile</span>
       </md-field>
       <md-field :class="getValidationClass('city')" v-if="form.addressSelection < 0">
         <label for="city">Stadt</label>
-        <md-input name="city" id="city" v-model="form.city"/>
+        <md-input name="city" id="city" v-model="form.city" autocomplete="city"/>
         <span class="md-error" v-if="!$v.form.city.required">Bitte geben Sie eine Stadt an</span>
-        <span class="md-error" v-else-if="!$v.form.city.minlength || !$v.form.city.maxlength">Ungültige Stadt</span>
+        <span class="md-error" v-else-if="!$v.form.city.minLength || !$v.form.city.maxLength">Ungültige Stadt</span>
       </md-field>
       <md-field :class="getValidationClass('zipCode')" v-if="form.addressSelection < 0">
         <label for="zip-code">PLZ</label>
-        <md-input name="zip-code" id="zip-code" v-model="form.zipCode"/>
+        <md-input name="zip-code" id="zip-code" v-model="form.zipCode" autocomplete="postal-code"/>
         <span class="md-error" v-if="!$v.form.zipCode.required">Bitte geben Sie eine PLZ an</span>
-        <span class="md-error" v-else-if="!$v.form.zipCode.minlength || !$v.form.zipCode.maxlength">Ungültige PLZ</span>
+        <span class="md-error" v-else-if="!$v.form.zipCode.minLength || !$v.form.zipCode.maxLength">Ungültige PLZ</span>
       </md-field>
       <md-field v-if="form.addressSelection < 0">
         <label for="country">Land</label>
@@ -66,7 +66,7 @@
         </md-select>
       </md-field>
       <div class="checkboxes">
-        <md-checkbox :class="getValidationClass('acceptDataStorage')" v-model="form.acceptDataStorage" class="md-primary">
+        <md-checkbox :class="getValidationClass('acceptDataStorage')" v-model="form.acceptDataStorage" class="md-primary" required>
           Hiermit bestätige ich die Richtigkeit aller Angaben und erkläre mich mit der Speicherung meiner Daten,
           im Rahmen der Corona-Verordnung, einverstanden.
         </md-checkbox>
@@ -134,8 +134,8 @@ export default {
       },
       phoneNumber: {
         required,
-        minLength: 5,
-        maxLength: 50
+        minLength: minLength(5),
+        maxLength: maxLength(50)
       },
       email: {
         required,
@@ -162,7 +162,7 @@ export default {
         maxLength: maxLength(6)
       },
       acceptDataStorage: {
-        required
+        checked: v => v === true
       }
     }
   },

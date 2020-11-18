@@ -2,8 +2,8 @@
   <div class="registration-management">
     <div class="description">
       <md-field>
-        <label for="description"> Ausgewähltes Zeitfenster</label>
-        <md-input id="description" :value="timeSlotDescription" readonly/>
+        <label for="description">Ausgewähltes Zeitfenster</label>
+        <md-input id="description" name="description" :value="timeSlotDescription" readonly/>
       </md-field>
     </div>
 
@@ -29,7 +29,7 @@
 
     <!-- TODO Add a dialog to confirm deletion of a guest -->
 
-    <md-button class="md-raised send-guests md-primary" :disabled="!atLeastOneGuestPresent" :md-ripple="false" @click="registerReservation">
+    <md-button class="md-raised send-guests md-primary" :disabled="!atLeastOneGuestPresent" @click="registerReservation">
       Speichern
     </md-button>
   </div>
@@ -67,16 +67,17 @@ export default {
     }
   },
   methods: {
-    async registerReservation() {
+    registerReservation() {
       axios({
         url: '/api/reservations/',
         method: 'post',
         data: this.$store.state.guests
       }).then(response => {
+        this.$store.commit('clearGuests');
         return this.$router.push({name: 'confirmation', params: {bookingCode: response.data.bookingCode}});
       }, reason => {
         console.warn(reason);
-      })
+      });
     },
     deleteGuest(guestId) {
       console.log(guestId)

@@ -31,6 +31,9 @@ export default new Vuex.Store({
             if (!loginState) {
                 delete localStorage.authToken;
             }
+        },
+        clearGuests: state => {
+            state.guests = [];
         }
     },
     getters: {

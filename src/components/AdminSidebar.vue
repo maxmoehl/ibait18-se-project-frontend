@@ -115,7 +115,7 @@ export default {
       this.createDialogForm.date = utils.convertToDate(new Date(Date.now()), '-');
       this.createDialogForm.startTime = null;
       this.createDialogForm.endTime = null;
-      this.createDialogForm.slotCount = null;
+      this.createDialogForm.capacity = null;
       this.createDialogOpen = false;
     },
     navToExports() {
