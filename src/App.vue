@@ -29,12 +29,12 @@
             <span class="md-list-item-text">Datenschutz</span>
           </md-list-item>
 
-          <md-list-item v-if="loggedIn" class="navigation-link" @click="navTo('admin')">
+          <md-list-item v-if="$store.state.loggedIn" class="navigation-link" @click="navTo('admin')">
             <md-icon>admin_panel_settings</md-icon>
             <span class="md-list-item-text">Administration</span>
           </md-list-item>
 
-          <md-list-item v-if="!loggedIn" class="navigation-link" @click="navTo('login')">
+          <md-list-item v-if="!$store.state.loggedIn" class="navigation-link" @click="navTo('login')">
             <md-icon>login</md-icon>
             <span class="md-list-item-text">Login</span>
           </md-list-item>
@@ -58,15 +58,12 @@ export default {
       showNavigation: false
     }
   },
-  computed: {
-    loggedIn() {
-      return this.$store.state.loggedIn;
-    }
-  },
   methods: {
     navTo(routeName) {
       this.showNavigation = false;
-      this.$router.push({name: routeName});
+      if (this.$route.name !== routeName) {
+        this.$router.push({name: routeName});
+      }
     }
   }
 }

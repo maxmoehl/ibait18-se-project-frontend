@@ -11,7 +11,7 @@
           <md-input name="email" id="email" v-model="form.email"></md-input>
         </md-field>
         <md-field>
-          <label for="password">Password</label>
+          <label for="password">Passwort</label>
           <md-input name="password" id="password" type="password" v-model="form.password"></md-input>
         </md-field>
       </md-card-content>

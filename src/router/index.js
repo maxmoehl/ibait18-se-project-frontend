@@ -7,7 +7,7 @@ import Login from "@/views/Login";
 import Admin from "@/views/Admin";
 import FAQ from "@/views/FAQ";
 import Privacy from "@/views/Privacy";
-import Export from "@/views/Export";
+import Reservations from "@/views/Reservations";
 
 Vue.use(VueRouter);
 
@@ -24,7 +24,7 @@ const routes = [
     props: true
   },
   {
-    path: '/confirmation/:bookingCode',
+    path: '/confirmation',
     name: 'confirmation',
     component: Confirmation,
     props: true
@@ -50,9 +50,9 @@ const routes = [
     component: Privacy
   },
   {
-    path: '/admin/export',
-    name: 'export',
-    component: Export
+    path: '/admin/reservations',
+    name: 'reservations',
+    component: Reservations
   }
 ]
 

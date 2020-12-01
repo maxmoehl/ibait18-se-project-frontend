@@ -1,47 +1,269 @@
 <template>
-  <md-table v-model="timeSlots" md-card>
-    <md-table-row slot="md-table-row" slot-scope="{ item }" @click="openEditDialog(item.timeSlotId)">
-      <md-table-cell md-label="Datum">
-        {{ convertToDate(item.startDate) }}
-      </md-table-cell>
-      <md-table-cell md-label="Zeitraum">
-        {{ getClockTime(item.startDate) }} - {{ getClockTime(item.endDate) }}
-      </md-table-cell>
-      <md-table-cell md-label="Reservierungen">
-        {{ item.reservations }} / {{ item.peopleCount }}
-      </md-table-cell>
-    </md-table-row>
-  </md-table>
+  <div class="reservation-table">
+    <div class="filter">
+      <md-card>
+        <md-card-header>
+          <div class="md-title">Zeitfenster</div>
+        </md-card-header>
+
+        <md-card-content>
+          <div class="md-layout md-gutter">
+            <div
+                class="md-layout-item md-xsmall-size-100 md-small-size-40 md-medium-size-40 md-large-size-40 md-xlarge-size-40">
+              <md-datepicker :md-disabled-dates="$store.getters.disabledDates" v-model="filter.date">
+                <label>Tag wählen</label>
+              </md-datepicker>
+            </div>
+            <div
+                class="md-layout-item md-xsmall-size-100 md-small-size-20 md-medium-size-20 md-large-size-20 md-xlarge-size-20">
+              <md-field>
+                <label for="limit">Max. Einträge</label>
+                <md-select id="limit" name="limit" v-model="filter.limit">
+                  <md-option :value="25">25</md-option>
+                  <md-option :value="50">50</md-option>
+                  <md-option :value="100">100</md-option>
+                  <md-option :value="200">200</md-option>
+                  <md-option :value="500">500</md-option>
+                  <md-option :value="1000">1000</md-option>
+                  <md-option :value="-1">Alle</md-option>
+                </md-select>
+              </md-field>
+            </div>
+          </div>
+        </md-card-content>
+
+        <md-card-actions>
+          <md-button class="md-primary" @click="updateTimeSlots">
+            Aktualisieren
+          </md-button>
+        </md-card-actions>
+      </md-card>
+    </div>
+    <md-table v-model="timeSlots" md-card>
+      <md-table-row slot="md-table-row" slot-scope="{ item }">
+        <md-table-cell md-label="Datum">
+          {{ convertToDate(item.startDate) }}
+        </md-table-cell>
+        <md-table-cell md-label="Zeitraum">
+          {{ getClockTime(item.startDate) }} - {{ getClockTime(item.endDate) }}
+        </md-table-cell>
+        <md-table-cell md-label="Reservierungen">
+          {{ item.reservations }} / {{ item.peopleCount }}
+        </md-table-cell>
+        <md-table-cell md-label="Aktionen">
+          <md-button class="md-icon-button" @click="openEditDialog(item._id)">
+            <md-icon>create</md-icon>
+          </md-button>
+          <md-button class="md-icon-button" @click="openExportDialog(item._id)">
+            <md-icon>cloud_download</md-icon>
+          </md-button>
+          <md-button class="md-icon-button" @click="openDeleteDialog(item._id)">
+            <md-icon>delete</md-icon>
+          </md-button>
+        </md-table-cell>
+      </md-table-row>
+    </md-table>
+
+    <md-dialog class="edit-timeslot-dialog" :md-active.sync="editTimeSlot.open">
+      <md-dialog-title>
+        Neues Zeitfenster anlegen
+      </md-dialog-title>
+      <md-dialog-content>
+        <md-datepicker v-model="editTimeSlot.date">
+          <label>Tag wählen</label>
+        </md-datepicker>
+        <md-field :class="getValidationClass('startTime')">
+          <label for="startTime">Startzeit</label>
+          <md-input id="startTime" name="startTime" v-model="editTimeSlot.startTime"/>
+          <span class="md-error" v-if="!$v.editTimeSlot.startTime.required">Bitte geben Sie eine Startzeit an</span>
+          <span class="md-error" v-else-if="!$v.editTimeSlot.startTime.mustBeTime">Ungültiges Format</span>
+        </md-field>
+        <md-field :class="getValidationClass('endTime')">
+          <label for="endTime">Endzeit</label>
+          <md-input id="endTime" name="endTime" v-model="editTimeSlot.endTime"/>
+          <span class="md-error" v-if="!$v.editTimeSlot.endTime.required">Bitte geben Sie eine Endzeit an</span>
+          <span class="md-error" v-else-if="!$v.editTimeSlot.endTime.mustBeTime">Ungültiges Format</span>
+        </md-field>
+        <md-field :class="getValidationClass('capacity')">
+          <label for="capacity">Kapazität</label>
+          <md-input id="capacity" name="capacity" v-model.number="editTimeSlot.capacity"/>
+          <span class="md-error" v-if="!$v.editTimeSlot.capacity.required">Bitte geben Sie eine Kapazität an</span>
+          <span class="md-error"
+                v-else-if="!$v.editTimeSlot.capacity.minValue">Mindestens ein Platz ist erforderlich</span>
+        </md-field>
+      </md-dialog-content>
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="closeEditDialog">Abbrechen</md-button>
+        <md-button class="md-primary" @click="confirmEditDialog">Speichern</md-button>
+      </md-dialog-actions>
+    </md-dialog>
+
+    <md-dialog class="export-dialog" :md-active.sync="exportTimeSlot.open">
+      <md-dialog-title>
+        <div class="md-title">Zeitfenster exportieren</div>
+      </md-dialog-title>
+
+      <md-dialog-content>
+        Ihr Export des Zeitfensters <b>{{ exportTimeSlotDescription }}</b> steht bereit.
+      </md-dialog-content>
+
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="closeExportDialog">Abbrechen</md-button>
+        <md-button class="md-primary" @click="confirmExportDialog">Herunterladen</md-button>
+      </md-dialog-actions>
+    </md-dialog>
+
+    <md-dialog class="delete-dialog" :md-active.sync="deleteTimeSlot.open">
+      <md-dialog-title>
+        <div class="md-title">Zeitfenster löschen</div>
+      </md-dialog-title>
+
+      <md-dialog-content>
+        Sie sind im Begriff, das ausgewählte Zeitfenster <b>{{ deleteTimeSlotDescription }}</b> und ALLE DAZUGEHÖRIGEN
+        RESERVIERUNGEN zu löschen. Wir werden alle registrierten Nutzer per E-Mail darauf hinweisen, dass ihre
+        Reservierung vom Veranstalter gelöscht wurde.
+      </md-dialog-content>
+
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="closeDeleteDialog">Abbrechen</md-button>
+        <md-button class="md-primary" @click="confirmDeleteDialog">Löschen</md-button>
+      </md-dialog-actions>
+    </md-dialog>
+  </div>
 </template>
 
 <script>
-import TimeSlotCard from "@/components/TimeSlotCard";
 import utils from "@/services/utils";
+import {minValue, required} from "vuelidate/lib/validators";
+import {parse as json2csv} from 'json2csv';
+
+const timeRegex = new RegExp(/^[0-2][0-9]:[0-5][0-9]$/);
+const mustBeTime = value => timeRegex.test(value);
 
 export default {
   name: "TimeSlotTable",
-  components: {TimeSlotCard},
   data: function () {
     return {
-      editDialogOpen: false,
-      editTimeSlotForm: {
-        startDate: "",
-        endDate: "",
-        totalSlots: 0
+      editTimeSlot: {
+        open: false,
+        timeSlotId: null,
+        date: null,
+        startTime: null,
+        endTime: null,
+        capacity: null
+      },
+      exportTimeSlot: {
+        open: false,
+        timeSlotId: null
+      },
+      deleteTimeSlot: {
+        open: false,
+        timeSlotId: null
+      },
+      filter: {
+        limit: 100,
+        date: null,
       }
     };
+  },
+  validations: {
+    editTimeSlot: {
+      startTime: {
+        required,
+        mustBeTime
+      },
+      endTime: {
+        required,
+        mustBeTime
+      },
+      capacity: {
+        required,
+        minValue: minValue(1)
+      }
+    }
   },
   computed: {
     timeSlots() {
       return this.$store.state.timeSlots;
+    },
+    deleteTimeSlotDescription() {
+      if (this.deleteTimeSlot.timeSlotId === null || this.deleteTimeSlot.timeSlotId === '') {
+        return '';
+      }
+      let timeSlot = this.$store.getters.timeSlot(this.deleteTimeSlot.timeSlotId);
+      if (timeSlot === null) {
+        return '';
+      }
+      return utils.getTimeSlotDescription(timeSlot);
+    },
+    exportTimeSlotDescription() {
+      if (this.exportTimeSlot.timeSlotId === null || this.exportTimeSlot.timeSlotId === '') {
+        return '';
+      }
+      let timeSlot = this.$store.getters.timeSlot(this.exportTimeSlot.timeSlotId);
+      if (timeSlot === null) {
+        return '';
+      }
+      return utils.getTimeSlotDescription(timeSlot);
     }
   },
   methods: {
-    openEditDialog() {
-      this.editDialogOpen = true;
+    openEditDialog(timeSlotId) {
+      console.log(timeSlotId);
+      this.editTimeSlot.open = true;
+      this.editTimeSlot.timeSlotId = timeSlotId;
+      let timeSlot = this.$store.getters.timeSlot(timeSlotId);
+      this.editTimeSlot.date = utils.convertToDate(new Date(timeSlot.startDate), '-');
+      this.editTimeSlot.startTime = utils.convertToClockTime(new Date(timeSlot.startDate));
+      this.editTimeSlot.endTime = utils.convertToClockTime(new Date(timeSlot.endDate));
+      this.editTimeSlot.capacity = timeSlot.peopleCount;
     },
     closeEditDialog() {
-      this.editDialogOpen = false;
+      this.editTimeSlot.open = false;
+      this.editTimeSlot.timeSlotId = null;
+      this.editTimeSlot.date = null;
+      this.editTimeSlot.startTime = null;
+      this.editTimeSlot.endTime = null;
+      this.editTimeSlot.capacity = null;
+    },
+    confirmEditDialog() {
+      this.$store.dispatch('updateTimeSlot', {
+        _id: this.editTimeSlot.timeSlotId,
+        startDate: Date.parse(`${this.editTimeSlot.date}T${this.editTimeSlot.startTime}`),
+        endDate: Date.parse(`${this.editTimeSlot.date}T${this.editTimeSlot.endTime}`),
+        peopleCount: this.editTimeSlot.capacity
+      }).then(() => this.closeEditDialog(), reason => {
+        console.error(reason.response.data);
+        this.closeEditDialog();
+      })
+    },
+    openExportDialog(timeSlotId) {
+      this.exportTimeSlot.open = true;
+      this.exportTimeSlot.timeSlotId = timeSlotId;
+    },
+    closeExportDialog() {
+      this.exportTimeSlot.open = false;
+      this.exportTimeSlot.timeSlotId = false;
+    },
+    confirmExportDialog() {
+      utils.exportToCsv(this.$store.getters.reservations(this.exportTimeSlot.timeSlotId));
+      this.closeExportDialog();
+    },
+    openDeleteDialog(timeSlotId) {
+      this.deleteTimeSlot.open = true;
+      this.deleteTimeSlot.timeSlotId = timeSlotId;
+    },
+    closeDeleteDialog() {
+      this.deleteTimeSlot.open = false;
+      this.deleteTimeSlot.timeSlotId = null;
+    },
+    confirmDeleteDialog() {
+      this.$store.dispatch('deleteTimeSlot', this.deleteTimeSlot.timeSlotId).then(
+          () => this.closeDeleteDialog(),
+          reason => {
+            console.error(reason.response.data);
+            this.closeDeleteDialog();
+          });
     },
     convertToDate(date) {
       return utils.convertToDate(new Date(date), '.');
@@ -49,10 +271,26 @@ export default {
     getClockTime(seconds) {
       return utils.convertToClockTime(new Date(seconds));
     },
+    updateTimeSlots() {
+      this.$store.dispatch('loadTimeSlots');
+    },
+    disabledDates() {
+      return this.$store.getters.disabledDates(true);
+    },
+    getValidationClass(fieldName) {
+      const field = this.$v.editTimeSlot[fieldName];
+      if (field) {
+        return {
+          'md-invalid': field.$invalid && field.$dirty
+        };
+      }
+    }
   }
 }
 </script>
 
 <style scoped>
-
+.filter {
+  margin-bottom: 10px;
+}
 </style>

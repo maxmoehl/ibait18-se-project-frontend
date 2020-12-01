@@ -12,7 +12,7 @@
       unseren Häufig gestellten Fragen (FAQ).
     </p>
     <p>
-      Bitte speichern Sie den Buchungscode und halten Sie ihn bei Ankunft bereit damit ein Mitarbeiter
+      Bitte speichern Sie den Buchungscode und halten Sie ihn bei Ankunft bereit, damit unser Personal
       ihn scannen kann.
     </p>
     <div class="bookingCode">

@@ -27,7 +27,7 @@
         <label for="address-selection">Adresse</label>
         <md-select name="address-selection" id="address-selection" v-model.number="form.addressSelection">
           <md-option :value="-1">
-            Neue Addresse
+            Neue Adresse
           </md-option>
           <md-option v-for="(guest, index) in guests" :key="`guest-${index}`" :value="index">
             {{ index + 1 }}. {{ guest.name }}
@@ -35,15 +35,15 @@
         </md-select>
       </md-field>
       <md-field :class="getValidationClass('addressLineOne')" v-if="form.addressSelection < 0">
-        <label for="address-line-one">Addresszeile 1</label>
+        <label for="address-line-one">Adresszeile 1</label>
         <md-input name="address-line-one" id="address-line-one" v-model="form.addressLineOne" autocomplete="address-line1"/>
-        <span class="md-error" v-if="!$v.form.addressLineOne.required">Bitte geben Sie eine Addresszeile an</span>
-        <span class="md-error" v-else-if="!$v.form.addressLineOne.minLength || !$v.form.addressLineOne.maxLength">Ungültige Addresszeile</span>
+        <span class="md-error" v-if="!$v.form.addressLineOne.required">Bitte geben Sie eine Adresszeile an</span>
+        <span class="md-error" v-else-if="!$v.form.addressLineOne.minLength || !$v.form.addressLineOne.maxLength">Ungültige Adresszeile</span>
       </md-field>
       <md-field :class="getValidationClass('addressLineTwo')" v-if="form.addressSelection < 0">
-        <label for="address-line-two">Addresszeile 2</label>
+        <label for="address-line-two">Adresszeile 2</label>
         <md-input name="address-line-two" id="address-line-two" v-model="form.addressLineTwo" autocomplete="address-line2"/>
-        <span class="md-error" v-if="!$v.form.name.maxLength">Ungültige zweite Addresszeile</span>
+        <span class="md-error" v-if="!$v.form.addressLineTwo.maxLength">Ungültige zweite Adresszeile</span>
       </md-field>
       <md-field :class="getValidationClass('city')" v-if="form.addressSelection < 0">
         <label for="city">Stadt</label>
@@ -67,8 +67,8 @@
       </md-field>
       <div class="checkboxes">
         <md-checkbox :class="getValidationClass('acceptDataStorage')" v-model="form.acceptDataStorage" class="md-primary" required>
-          Hiermit bestätige ich die Richtigkeit aller Angaben und erkläre mich mit der Speicherung meiner Daten,
-          im Rahmen der Corona-Verordnung, einverstanden.
+          Hiermit bestätige ich die Richtigkeit aller Angaben und erkläre mich mit der Speicherung meiner Daten
+          im Rahmen der Corona-Verordnung einverstanden.
         </md-checkbox>
       </div>
     </md-dialog-content>
@@ -91,7 +91,7 @@ export default {
   },
   data: function () {
     return {
-      countries: [
+      countries_: [
         {
           'name': 'China',
           'alpha3Code': 'CHN'
@@ -226,6 +226,9 @@ export default {
   computed: {
     guests() {
       return this.$store.state.guests;
+    },
+    countries() {
+      return this.$store.state.countries;
     }
   }
 }

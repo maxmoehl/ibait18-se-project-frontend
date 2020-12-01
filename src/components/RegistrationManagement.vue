@@ -9,9 +9,9 @@
 
     <md-card v-for="(guest, index) in guests" :key="guest.name">
       <md-card-header>
-        <div @click="deleteGuest(index)">
+        <div>
           {{ index + 1 }}. {{ guest.name }}
-          <md-icon style="float: right">close</md-icon>
+          <md-icon @click.native="deleteGuest(index)" class="remove-guest">delete</md-icon>
         </div>
       </md-card-header>
     </md-card>
@@ -25,11 +25,13 @@
       </md-card>
     </div>
 
-    <RegistrationForm :time-slot-id="timeSlotId" :md-active="registrationDialogOpen" @close="registrationDialogOpen = false"/>
+    <RegistrationForm :time-slot-id="timeSlotId" :md-active="registrationDialogOpen"
+                      @close="registrationDialogOpen = false"/>
 
     <!-- TODO Add a dialog to confirm deletion of a guest -->
 
-    <md-button class="md-raised send-guests md-primary" :disabled="!atLeastOneGuestPresent" @click="registerReservation">
+    <md-button class="md-raised send-guests md-primary" :disabled="!atLeastOneGuestPresent"
+               @click="registerReservations">
       Speichern
     </md-button>
   </div>
@@ -56,28 +58,22 @@ export default {
       return this.$store.state.guests;
     },
     timeSlotDescription() {
-      let t = this.$store.getters.getTimeSlot(this.timeSlotId);
+      let t = this.$store.getters.timeSlot(this.timeSlotId);
       if (!t) {
         return 'Loading...';
       }
-      return `${utils.convertToDate(new Date(t.startDate), '.')} ${utils.convertToClockTime(new Date(t.startDate))}-${utils.convertToClockTime(new Date(t.endDate))}`;
+      return utils.getTimeSlotDescription(t);
     },
     atLeastOneGuestPresent() {
       return this.$store.state.guests.length > 0;
     }
   },
   methods: {
-    registerReservation() {
-      axios({
-        url: '/api/reservations/',
-        method: 'post',
-        data: this.$store.state.guests
-      }).then(response => {
-        this.$store.commit('clearGuests');
-        return this.$router.push({name: 'confirmation', params: {bookingCode: response.data.bookingCode}});
-      }, reason => {
-        console.warn(reason);
-      });
+    registerReservations() {
+      this.$store.dispatch('sendReservations').then(() => {
+            this.$store.commit('clearGuests');
+            this.$router.push({name: 'confirmation'});
+          }, () => this.$router.push({name: 'error'}));
     },
     deleteGuest(guestId) {
       console.log(guestId)
@@ -90,6 +86,11 @@ export default {
 <style scoped>
 .description {
   padding: 0 10px;
+}
+
+.remove-guest {
+  float: right;
+  cursor: pointer;
 }
 
 .send-guests {

@@ -4,9 +4,13 @@
 
 <script>
 import ReservationTable from "@/components/ReservationTable";
+
 export default {
   name: "Export",
-  components: {ReservationTable}
+  components: {ReservationTable},
+  beforeCreate() {
+    this.$store.dispatch('loadReservations');
+  }
 }
 </script>
 

@@ -5,9 +5,9 @@
         <md-icon>add</md-icon> Neues Zeitfenster
       </md-card-header>
     </md-card>
-    <md-card @click.native="navToExports" class="create-timeslot">
+    <md-card @click.native="$router.push({name: 'reservations'})" class="create-timeslot">
       <md-card-header>
-        <md-icon>cloud_download</md-icon> Daten exportieren
+        <md-icon>event</md-icon> Reservierungen verwalten
       </md-card-header>
     </md-card>
 
@@ -17,26 +17,26 @@
         Neues Zeitfenster anlegen
       </md-dialog-title>
       <md-dialog-content>
-        <md-datepicker v-model="createDialogForm.date" :md-disabled-dates="disabledDates">
-          <label>Tag wählen</label>
+        <md-datepicker v-model="createDialogForm.date">
+          <label>Tag auswählen</label>
         </md-datepicker>
         <md-field :class="getValidationClass('startTime')">
-          <label for="startTime">Start-Zeit</label>
-          <md-input id="startTime" name="startTime" v-model="createDialogForm.startTime"/>
-          <span class="md-error" v-if="!$v.createDialogForm.startTime.required">Bitte geben Sie eine Start-Zeit an</span>
+          <label for="startTime">HH:MM</label>
+          <md-input id="startTime" name="startTime" v-model="createDialogForm.startTime" placeholder="Start-Zeit"/>
+          <span class="md-error" v-if="!$v.createDialogForm.startTime.required">Bitte geben Sie eine Startzeit an</span>
           <span class="md-error" v-else-if="!$v.createDialogForm.startTime.mustBeTime">Ungültiges Format</span>
         </md-field>
         <md-field :class="getValidationClass('endTime')">
-          <label for="endTime">End-Zeit</label>
-          <md-input id="endTime" name="endTime" v-model="createDialogForm.endTime"/>
-          <span class="md-error" v-if="!$v.createDialogForm.endTime.required">Bitte geben Sie eine End-Zeit an</span>
+          <label for="endTime">HH:MM</label>
+          <md-input id="endTime" name="endTime" v-model="createDialogForm.endTime" placeholder="End-Zeit"/>
+          <span class="md-error" v-if="!$v.createDialogForm.endTime.required">Bitte geben Sie eine Endzeit an</span>
           <span class="md-error" v-else-if="!$v.createDialogForm.endTime.mustBeTime">Ungültiges Format</span>
         </md-field>
         <md-field :class="getValidationClass('capacity')">
-          <label for="capacity">Plätze</label>
+          <label for="capacity">Kapazität</label>
           <md-input id="capacity" name="capacity" v-model.number="createDialogForm.capacity"/>
-          <span class="md-error" v-if="!$v.createDialogForm.capacity.required">Bitte geben Sie eine Platzanzahl an</span>
-          <span class="md-error" v-else-if="!$v.createDialogForm.capacity.minValue">Mindestens ein Platz ist nötig</span>
+          <span class="md-error" v-if="!$v.createDialogForm.capacity.required">Bitte geben Sie eine Kapazität an</span>
+          <span class="md-error" v-else-if="!$v.createDialogForm.capacity.minValue">Mindestens ein Platz ist erforderlich</span>
         </md-field>
       </md-dialog-content>
       <md-dialog-actions>
@@ -117,9 +117,6 @@ export default {
       this.createDialogForm.endTime = null;
       this.createDialogForm.capacity = null;
       this.createDialogOpen = false;
-    },
-    navToExports() {
-      this.$router.push({name: 'export'});
     },
     getValidationClass(fieldName) {
       const field = this.$v.createDialogForm[fieldName];
