@@ -135,7 +135,6 @@
 <script>
 import utils from "@/services/utils";
 import {minValue, required} from "vuelidate/lib/validators";
-import {parse as json2csv} from 'json2csv';
 
 const timeRegex = new RegExp(/^[0-2][0-9]:[0-5][0-9]$/);
 const mustBeTime = value => timeRegex.test(value);
@@ -184,7 +183,18 @@ export default {
   },
   computed: {
     timeSlots() {
-      return this.$store.state.timeSlots;
+      let dateRangeStart, dateRangeEnd = 0
+      if (this.filter.date !== null) {
+        dateRangeStart = this.filter.date.valueOf();
+        dateRangeEnd = dateRangeStart + utils.time.d;
+      }
+
+      return this.$store.state.timeSlots.filter((timeSlot, index) => {
+        if (index >= this.filter.limit && this.filter.limit !== -1) return false;
+        if (dateRangeStart !== 0 && timeSlot.startDate < dateRangeStart) return false;
+        if (dateRangeEnd !== 0 && timeSlot.endDate > dateRangeEnd) return false;
+        return true;
+      });
     },
     deleteTimeSlotDescription() {
       if (this.deleteTimeSlot.timeSlotId === null || this.deleteTimeSlot.timeSlotId === '') {

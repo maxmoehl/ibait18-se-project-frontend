@@ -8,16 +8,29 @@
 
         <md-card-content>
           <div class="md-layout md-gutter">
-            <div class="md-layout-item md-xsmall-size-100 md-small-size-40 md-medium-size-40 md-large-size-40 md-xlarge-size-40">
+            <div class="md-layout-item md-xsmall-size-100 md-small-size-33 md-medium-size-20 md-large-size-20 md-xlarge-size-20">
               <md-field>
                 <label for="name">Name</label>
                 <md-input id="name" name="name" v-model="filter.name"/>
               </md-field>
             </div>
-            <div class="md-layout-item md-xsmall-size-100 md-small-size-40 md-medium-size-40 md-large-size-40 md-xlarge-size-40">
+            <div class="md-layout-item md-xsmall-size-100 md-small-size-33 md-medium-size-20 md-large-size-20 md-xlarge-size-20">
               <md-field>
                 <label for="city">Stadt</label>
                 <md-input id="city" name="city" v-model="filter.city"/>
+              </md-field>
+            </div>
+            <div class="md-layout-item md-xsmall-size-100 md-small-size-33 md-medium-size-20 md-large-size-20 md-xlarge-size-20">
+              <md-datepicker v-model="filter.date">
+                <label>
+                  Datum
+                </label>
+              </md-datepicker>
+            </div>
+            <div class="md-layout-item md-xsmall-size-100 md-small-size-33 md-medium-size-20 md-large-size-20 md-xlarge-size-20">
+              <md-field>
+                <label for="time">HH:MM</label>
+                <md-input id="time" name="time" v-model="filter.time" placeholder="Uhrzeit" :disabled="filter.date === null"/>
               </md-field>
             </div>
             <div class="md-layout-item md-xsmall-size-100 md-small-size-20 md-medium-size-20 md-large-size-20 md-xlarge-size-20">
@@ -34,10 +47,18 @@
                 </md-select>
               </md-field>
             </div>
+            <div class="md-layout-item md-xsmall-size-100 md-small-size-45 md-medium-size-40 md-large-size-40 md-xlarge-size-40">
+              <md-checkbox v-model="filter.onlyPastReservations">
+                Zukünftige Reservierungen ausblenden
+              </md-checkbox>
+            </div>
           </div>
         </md-card-content>
 
         <md-card-actions>
+          <md-button class="md-primary" @click="dialogs.helpOpen = true">
+            Hilfe
+          </md-button>
           <md-button class="md-primary" @click="updateReservations">
             Aktualisieren
           </md-button>
@@ -81,6 +102,35 @@
         <md-button class="md-primary md-raised" @click="clearFilters">Filter zurücksetzen</md-button>
       </md-table-empty-state>
     </md-table>
+
+    <md-dialog>
+      <md-dialog-title>
+        <div class="md-title">Exportieren</div>
+      </md-dialog-title>
+
+      <md-dialog-content>
+
+      </md-dialog-content>
+    </md-dialog>
+
+    <md-dialog class="help-dialog" :md-active.sync="dialogs.helpOpen">
+      <md-dialog-title>
+        <div class="md-title">Filter Hilfe</div>
+      </md-dialog-title>
+
+      <md-dialog-content>
+        Um die Uhrzeit zu setzen ist zuerst ein Datum nötig.<br>
+        Wenn ein Datum gesetzt ist werden nur reservierungen nur für diesen tag angezeigt<br>
+        Die Filter werden automatisch angewendet.<br>
+        Über den "AKTUALISIEREN" Button können die Reservierungen erneut vom Server geladen werden.
+      </md-dialog-content>
+
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="dialogs.helpOpen = false">
+          Schließen
+        </md-button>
+      </md-dialog-actions>
+    </md-dialog>
   </div>
 </template>
 
@@ -94,21 +144,45 @@ export default {
       filter: {
         name: '',
         city: '',
-        limit: 100
+        date: null,
+        time: '',
+        limit: 100,
+        onlyPastReservations: true
       },
       dialogs: {
         exportOpen: false,
         deleteOpen: false,
+        helpOpen: false,
         timeSlotId: null
+      }
+    }
+  },
+  watch: {
+    'filter.date': function (val) {
+      if (val === null) {
+        this.filter.time = '';
       }
     }
   },
   computed: {
     reservations() {
+      let dateRangeStart, dateRangeEnd = 0;
+      if (this.filter.date !== null) {
+        dateRangeStart = this.filter.date.valueOf();
+        dateRangeEnd = dateRangeStart + utils.time.d;
+        if (/^\d{1,2}:\d{1,2}$/.test(this.filter.time)) {
+          let t = this.filter.time.split(':');
+          dateRangeStart += utils.time.h * t[0] * utils.time.m * t[1];
+        }
+      }
+
       return this.$store.state.reservations.filter((reservation, index) => {
         if (index >= this.filter.limit && this.filter.limit !== -1) return false;
         if (!reservation.name.toLowerCase().includes(this.filter.name.toLowerCase())) return false;
         if (!reservation.city.toLowerCase().includes(this.filter.city.toLowerCase())) return false;
+        if (dateRangeStart !== 0 && reservation.timeSlot.startDate < dateRangeStart) return false;
+        if (dateRangeEnd !== 0 && reservation.timeSlot.endDate > dateRangeEnd) return false;
+        if (this.filter.onlyPastReservations && reservation.timeSlot.endDate >= Date.now()) return false;
         return true;
       });
     }
