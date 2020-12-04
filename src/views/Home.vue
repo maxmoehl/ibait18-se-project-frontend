@@ -16,6 +16,10 @@
 <script>
 import TimeSlotSelection from "@/components/TimeSlotSelection";
 
+/**
+ * The main view every user accessing the website gets sent to. Users can either access the menu to navigate to another
+ * page or use the TimeSlotSelection to choose a timeslot to book a reservation.
+ */
 export default {
   name: 'Home',
   components: {TimeSlotSelection}

@@ -8,10 +8,16 @@
 </template>
 
 <script>
+/**
+ * Displays information on how this website is intended to be used.
+ */
 export default {
   name: "FAQ",
   data: () => {
     return {
+      /**
+       * A set of frequently asked questions that is used to generate the page.
+       */
       questions: [
         {
           id: 0,

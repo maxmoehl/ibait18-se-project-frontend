@@ -22,24 +22,35 @@
 </template>
 
 <script>
-import utils from '../services/utils';
+import {convertToClockTime, convertToDate} from '@/services/utils';
 
+/**
+ * The main component on the home screen. Here the user can select a date and then a timeslot.
+ */
 export default {
   name: "TimeSlotSelection",
-  data: function() {
+  data: function () {
     return {
-      selectedDate: utils.convertToDate(new Date(), '-')
+      /**
+       * The currently selected date, defaults to today.
+       */
+      selectedDate: convertToDate(new Date(), '-')
     };
   },
   computed: {
+    /**
+     * Returns the timeslots for today, filtering out timeslots that are full
+     */
     timeSlots() {
-      return this.$store.getters.timeSlotsByDate(new Date(Date.parse(this.selectedDate)))
-          .filter(t => {
-            return t.reservations < t.peopleCount && t.startDate > Date.now();
-          })
+      return this.$store.getters.timeSlotsByDate(new Date(Date.parse(this.selectedDate))).filter(t => {
+        return t.reservations < t.peopleCount && t.startDate > Date.now();
+      })
     },
   },
   methods: {
+    /**
+     * Based on the result form the store we additionally filter out dates that are in the past.
+     */
     disabledDates(date) {
       if (this.$store.getters.disabledDates(date)) {
         return true;
@@ -49,9 +60,15 @@ export default {
       today.setHours(0, 0, 0, 0);
       return d < today;
     },
-    getClockTime(seconds) {
-      return utils.convertToClockTime(new Date(seconds));
+    /**
+     * Returns the passed in value as a time in the format HH:MM
+     */
+    getClockTime(ms) {
+      return convertToClockTime(new Date(ms));
     },
+    /**
+     * Opens the registration management page for a certain timeslot.
+     */
     openRegistration(timeSlotId) {
       this.$router.push({name: 'register', params: {timeSlotId: timeSlotId}});
     }

@@ -1,7 +1,6 @@
 <template>
   <div class="register">
     <registration-management :time-slot-id="timeSlotId"></registration-management>
-    <registration-form></registration-form>
   </div>
 </template>
 
@@ -9,6 +8,9 @@
 import RegistrationForm from "@/components/RegistrationForm";
 import RegistrationManagement from "@/components/RegistrationManagement";
 
+/**
+ * In this view the user can enter the data of every guest he would like to add.
+ */
 export default {
   name: "Register",
   components: {RegistrationManagement, RegistrationForm},

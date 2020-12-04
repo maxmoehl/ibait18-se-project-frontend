@@ -15,12 +15,19 @@
 <script>
 import QRCode from 'qrcode';
 
+/**
+ * Extension of MdCard to display a booking code as qrcode and string together with the name of the person
+ * that booking code is valid for
+ */
 export default {
   name: "BookingCode",
   props: {
     name: String,
     bookingCode: String
   },
+  /**
+   * As soon as the component gets mounted, draw the qr code to the canvas.
+   */
   mounted() {
     QRCode.toCanvas(document.getElementById(`qrcode-${this.bookingCode}`), this.bookingCode, e => {
       if (e) console.error(e);

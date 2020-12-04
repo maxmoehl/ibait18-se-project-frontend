@@ -54,7 +54,7 @@
           <md-button class="md-icon-button" @click="openEditDialog(item._id)">
             <md-icon>create</md-icon>
           </md-button>
-          <md-button class="md-icon-button" @click="openExportDialog(item._id)">
+          <md-button class="md-icon-button" @click="openExportDialog(item._id)" :disabled="item.reservations === 0">
             <md-icon>cloud_download</md-icon>
           </md-button>
           <md-button class="md-icon-button" @click="openDeleteDialog(item._id)">
@@ -98,20 +98,7 @@
       </md-dialog-actions>
     </md-dialog>
 
-    <md-dialog class="export-dialog" :md-active.sync="exportTimeSlot.open">
-      <md-dialog-title>
-        <div class="md-title">Zeitfenster exportieren</div>
-      </md-dialog-title>
-
-      <md-dialog-content>
-        Ihr Export des Zeitfensters <b>{{ exportTimeSlotDescription }}</b> steht bereit.
-      </md-dialog-content>
-
-      <md-dialog-actions>
-        <md-button class="md-primary" @click="closeExportDialog">Abbrechen</md-button>
-        <md-button class="md-primary" @click="confirmExportDialog">Herunterladen</md-button>
-      </md-dialog-actions>
-    </md-dialog>
+    <ExportDialog :active.sync="exportTimeSlot.open" :time-slot-id="exportTimeSlot.timeSlotId"/>
 
     <md-dialog class="delete-dialog" :md-active.sync="deleteTimeSlot.open">
       <md-dialog-title>
@@ -133,14 +120,16 @@
 </template>
 
 <script>
-import utils from "@/services/utils";
+import {convertToClockTime, convertToDate, getTimeSlotDescription, mustBeTime, time} from "@/services/utils";
 import {minValue, required} from "vuelidate/lib/validators";
+import ExportDialog from "@/components/ExportDialog";
 
-const timeRegex = new RegExp(/^[0-2][0-9]:[0-5][0-9]$/);
-const mustBeTime = value => timeRegex.test(value);
-
+/**
+ * This is the central component for managing timeslots.
+ */
 export default {
   name: "TimeSlotTable",
+  components: {ExportDialog},
   data: function () {
     return {
       editTimeSlot: {
@@ -186,7 +175,7 @@ export default {
       let dateRangeStart, dateRangeEnd = 0
       if (this.filter.date !== null) {
         dateRangeStart = this.filter.date.valueOf();
-        dateRangeEnd = dateRangeStart + utils.time.d;
+        dateRangeEnd = dateRangeStart + time.d;
       }
 
       return this.$store.state.timeSlots.filter((timeSlot, index) => {
@@ -204,17 +193,7 @@ export default {
       if (timeSlot === null) {
         return '';
       }
-      return utils.getTimeSlotDescription(timeSlot);
-    },
-    exportTimeSlotDescription() {
-      if (this.exportTimeSlot.timeSlotId === null || this.exportTimeSlot.timeSlotId === '') {
-        return '';
-      }
-      let timeSlot = this.$store.getters.timeSlot(this.exportTimeSlot.timeSlotId);
-      if (timeSlot === null) {
-        return '';
-      }
-      return utils.getTimeSlotDescription(timeSlot);
+      return getTimeSlotDescription(timeSlot);
     }
   },
   methods: {
@@ -223,9 +202,9 @@ export default {
       this.editTimeSlot.open = true;
       this.editTimeSlot.timeSlotId = timeSlotId;
       let timeSlot = this.$store.getters.timeSlot(timeSlotId);
-      this.editTimeSlot.date = utils.convertToDate(new Date(timeSlot.startDate), '-');
-      this.editTimeSlot.startTime = utils.convertToClockTime(new Date(timeSlot.startDate));
-      this.editTimeSlot.endTime = utils.convertToClockTime(new Date(timeSlot.endDate));
+      this.editTimeSlot.date = convertToDate(new Date(timeSlot.startDate), '-');
+      this.editTimeSlot.startTime = convertToClockTime(new Date(timeSlot.startDate));
+      this.editTimeSlot.endTime = convertToClockTime(new Date(timeSlot.endDate));
       this.editTimeSlot.capacity = timeSlot.peopleCount;
     },
     closeEditDialog() {
@@ -251,14 +230,6 @@ export default {
       this.exportTimeSlot.open = true;
       this.exportTimeSlot.timeSlotId = timeSlotId;
     },
-    closeExportDialog() {
-      this.exportTimeSlot.open = false;
-      this.exportTimeSlot.timeSlotId = false;
-    },
-    confirmExportDialog() {
-      utils.exportToCsv(this.$store.getters.reservations(this.exportTimeSlot.timeSlotId));
-      this.closeExportDialog();
-    },
     openDeleteDialog(timeSlotId) {
       this.deleteTimeSlot.open = true;
       this.deleteTimeSlot.timeSlotId = timeSlotId;
@@ -268,25 +239,24 @@ export default {
       this.deleteTimeSlot.timeSlotId = null;
     },
     confirmDeleteDialog() {
-      this.$store.dispatch('deleteTimeSlot', this.deleteTimeSlot.timeSlotId).then(
-          () => this.closeDeleteDialog(),
+      this.$store.dispatch('deleteTimeSlot', this.deleteTimeSlot.timeSlotId).then(() => this.closeDeleteDialog(),
           reason => {
             console.error(reason.response.data);
             this.closeDeleteDialog();
           });
     },
     convertToDate(date) {
-      return utils.convertToDate(new Date(date), '.');
+      return convertToDate(new Date(date), '.');
     },
     getClockTime(seconds) {
-      return utils.convertToClockTime(new Date(seconds));
+      return convertToClockTime(new Date(seconds));
     },
     updateTimeSlots() {
       this.$store.dispatch('loadTimeSlots');
     },
-    disabledDates() {
-      return this.$store.getters.disabledDates(true);
-    },
+    /**
+     * Helper method to set the proper classes for validation.
+     */
     getValidationClass(fieldName) {
       const field = this.$v.editTimeSlot[fieldName];
       if (field) {

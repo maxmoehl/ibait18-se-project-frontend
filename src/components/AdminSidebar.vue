@@ -50,18 +50,18 @@
 <script>
 import axios from 'axios';
 import {required, minValue} from 'vuelidate/lib/validators'
-import utils from "@/services/utils";
+import {mustBeTime, convertToDate} from "@/services/utils";
 
-const timeRegex = new RegExp(/^[0-2][0-9]:[0-5][0-9]$/);
-const mustBeTime = value => timeRegex.test(value);
-
+/**
+ * Gives the user access to admin functionality: Creating new time slots and accessing the reservations.
+ */
 export default {
   name: "AdminSidebar",
   data() {
     return {
       createDialogOpen: false,
       createDialogForm: {
-        date: utils.convertToDate(new Date(Date.now()), '-'),
+        date: convertToDate(new Date(Date.now()), '-'),
         startTime: null,
         endTime: null,
         capacity: null
@@ -85,18 +85,27 @@ export default {
     }
   },
   methods: {
+    /**
+     * Checks whether or not a certain date should be available in the date picker.
+     * @param date The date to be checked
+     * @return {boolean} Whether or not it should be disabled
+     */
     disabledDates(date) {
       let d = new Date(Date.parse(date));
       let today = new Date(Date.now());
       today.setHours(0, 0, 0, 0);
       return d < today;
     },
+    /**
+     * Validates the form to add a new timeslot and sends it on success.
+     */
     addTimeSlot() {
       this.$v.$touch();
       if (this.$v.$invalid) {
         return;
       }
       this.$v.$reset();
+      // TODO move this to the store
       axios({
         url: '/api/timeslots/',
         method: 'post',
@@ -111,13 +120,19 @@ export default {
       })
       this.closeCreateTimeSlotDialog();
     },
+    /**
+     * Resets the add timeslot form and closes the dialog.
+     */
     closeCreateTimeSlotDialog() {
-      this.createDialogForm.date = utils.convertToDate(new Date(Date.now()), '-');
+      this.createDialogForm.date = convertToDate(new Date(Date.now()), '-');
       this.createDialogForm.startTime = null;
       this.createDialogForm.endTime = null;
       this.createDialogForm.capacity = null;
       this.createDialogOpen = false;
     },
+    /**
+     * Helper method to set the proper classes for validation
+     */
     getValidationClass(fieldName) {
       const field = this.$v.createDialogForm[fieldName];
       if (field) {

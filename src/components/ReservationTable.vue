@@ -87,7 +87,7 @@
           {{ getTimeSlotDescription(item.timeSlot) }}
         </md-table-cell>
         <md-table-cell md-label="Aktionen">
-          <md-button class="md-icon-button">
+          <md-button class="md-icon-button" @click="openExportDialog(item.timeSlot._id)">
             <md-icon>cloud_download</md-icon>
           </md-button>
           <md-button class="md-icon-button">
@@ -103,15 +103,7 @@
       </md-table-empty-state>
     </md-table>
 
-    <md-dialog>
-      <md-dialog-title>
-        <div class="md-title">Exportieren</div>
-      </md-dialog-title>
-
-      <md-dialog-content>
-
-      </md-dialog-content>
-    </md-dialog>
+    <ExportDialog :active.sync="dialogs.exportOpen" :time-slot-id="dialogs.timeSlotId"/>
 
     <md-dialog class="help-dialog" :md-active.sync="dialogs.helpOpen">
       <md-dialog-title>
@@ -136,9 +128,11 @@
 
 <script>
 import utils from "@/services/utils";
+import ExportDialog from "@/components/ExportDialog";
 
 export default {
   name: "ReservationTable",
+  components: {ExportDialog},
   data() {
     return {
       filter: {
@@ -200,6 +194,10 @@ export default {
     },
     openDeleteDialog(reservationCode) {
 
+    },
+    openExportDialog(timeSlotId) {
+      this.dialogs.timeSlotId = timeSlotId;
+      this.dialogs.exportOpen = true;
     }
   }
 }

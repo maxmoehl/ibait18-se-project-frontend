@@ -5,6 +5,19 @@ const s = ms * 1000;
 const m = s * 60;
 const h = m * 60;
 const d = h * 24;
+/**
+ * Helper units for easier calculations with time.
+ *
+ * @type {{s: number, d: number, ms: number, h: number, m: number}}
+ */
+export const time = {ms: ms, s: s, m: m, h: h, d: d};
+
+/**
+ * Simple function to test whether or not a string matches the patter HH:MM
+ * @param value {String} to be tested
+ * @return {boolean} whether or not the string matches
+ */
+export const mustBeTime = value => /^[0-2][0-9]:[0-5][0-9]$/.test(value);
 
 /**
  * Converts a Date to string of the format yyyy-MM-dd or dd.MM.yyyy
@@ -13,7 +26,7 @@ const d = h * 24;
  * @param date {Date}
  * @param sep {String} (-|.) separator, default is '-'
  */
-function convertToDate(date, sep) {
+export function convertToDate(date, sep) {
     let y = `${date.getFullYear()}`;
     let m = `${date.getMonth() + 1}`;
     if (m.length === 1) {
@@ -34,8 +47,9 @@ function convertToDate(date, sep) {
  * Converts a Date to string of the format hh:mm
  *
  * @param date {Date}
+ * @returns {String}
  */
-function convertToClockTime(date) {
+export function convertToClockTime(date) {
     let h = `${date.getHours()}`
     if (h.length === 1) {
         h = '0' + h;
@@ -47,11 +61,22 @@ function convertToClockTime(date) {
     return h + ':' + m;
 }
 
-function getTimeSlotDescription(t) {
+/**
+ * Generates a human readable representation of a timeslot.
+ * @param t {{startDate: Number, endDate: Number}}
+ * @return {String}
+ */
+export function getTimeSlotDescription(t) {
     return `${convertToDate(new Date(t.startDate), '.')} ${convertToClockTime(new Date(t.startDate))}-${convertToClockTime(new Date(t.endDate))}`;
 }
 
-function exportToCsv(data) {
+/**
+ * Takes the data array of reservations and converts it into csv format. After that a hidden element is added to the
+ * document that is then clicked to trigger a download.
+ *
+ * @param data {Array<Object>}
+ */
+export function exportToCsv(data) {
     // as we know that we are dealing with reservations, we can unfold the objects and rename the fields to
     // be more user friendly
     let reservations = [];
@@ -84,5 +109,5 @@ export default {
     convertToClockTime,
     getTimeSlotDescription,
     exportToCsv,
-    time: {ms, s, m, h, d}
+    time
 }

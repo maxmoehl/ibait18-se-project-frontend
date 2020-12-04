@@ -1,5 +1,5 @@
 <template>
-  <md-dialog :md-active="mdActive">
+  <md-dialog :md-active.sync="active">
     <md-dialog-title>
       Neuer Gast
     </md-dialog-title>
@@ -83,32 +83,17 @@
 <script>
 import {email, maxLength, minLength, required, requiredIf} from 'vuelidate/lib/validators'
 
+/**
+ * This dialog is for registering a new guest. The form is validated and the guest gets stored in the shared store.
+ */
 export default {
   name: "RegistrationForm",
   props: {
-    mdActive: false,
-    timeSlotId: null
+    active: Boolean,
+    timeSlotId: String
   },
   data: function () {
     return {
-      countries_: [
-        {
-          'name': 'China',
-          'alpha3Code': 'CHN'
-        },
-        {
-          'name': 'Denmark',
-          'alpha3Code': 'DNK'
-        },
-        {
-          'name': 'Germany',
-          'alpha3Code': 'DEU'
-        },
-        {
-          'name': 'Haiti',
-          'alpha3Code': 'HTI'
-        }
-      ],
       form: {
         name: null,
         phoneNumber: null,
@@ -181,10 +166,10 @@ export default {
       this.form.zipCode = null;
       this.form.countryCode = 'DEU';
       this.form.acceptDataStorage = false;
-      this.$emit('close');
+      this.$emit('update:active', false);
     },
     /**
-     * Stores the new guest in the vuex store and calls closeDialog
+     * Validates the form, stores the new guest in the vuex store on success and calls closeDialog
      */
     saveGuest() {
       this.$v.$touch();
@@ -214,6 +199,9 @@ export default {
       this.$store.commit('addGuest', guest);
       this.closeDialog()
     },
+    /**
+     * Helper method to set the proper classes for validation.
+     */
     getValidationClass(fieldName) {
       const field = this.$v.form[fieldName];
       if (field) {
@@ -224,9 +212,15 @@ export default {
     }
   },
   computed: {
+    /**
+     * Return the current guests to display the options for copying addresses
+     */
     guests() {
       return this.$store.state.guests;
     },
+    /**
+     * Returns all countries currently stored in our store
+     */
     countries() {
       return this.$store.state.countries;
     }

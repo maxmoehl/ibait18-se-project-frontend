@@ -42,23 +42,40 @@
       </md-app-drawer>
 
       <md-app-content>
-        <router-view></router-view>
+        <router-view/>
       </md-app-content>
     </md-app>
   </div>
 </template>
 
 <script>
+/**
+ * This is the main App component. It provides the base structure of our web app such as the top bar including
+ * the menu button and the title as well as the menu itself since these components are the same throughout the whole
+ * app. Every other view gets included in this component through the <router-view/> component.
+ */
 export default {
+  /**
+   * Before the app gets created we dispatch our init action to load all data and set up the shared state. We also
+   * check the login state and if the user is not logged in but on a page that requires login we push the user
+   * back to the login page.
+   */
   beforeCreate() {
     this.$store.dispatch('init');
   },
   data() {
     return {
+      /**
+       * Whether or not to display the drawer containing the different menu urls.
+       */
       showNavigation: false
     }
   },
   methods: {
+    /**
+     * Convenience method to navigate to any route without duplicating routes and close the navigation afterwards.
+     * @param routeName
+     */
     navTo(routeName) {
       this.showNavigation = false;
       if (this.$route.name !== routeName) {

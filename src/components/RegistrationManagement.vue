@@ -25,8 +25,7 @@
       </md-card>
     </div>
 
-    <RegistrationForm :time-slot-id="timeSlotId" :md-active="registrationDialogOpen"
-                      @close="registrationDialogOpen = false"/>
+    <RegistrationForm :time-slot-id="timeSlotId" :active.sync="registrationDialogOpen"/>
 
     <!-- TODO Add a dialog to confirm deletion of a guest -->
 
@@ -38,7 +37,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import utils from "@/services/utils";
 import RegistrationForm from "@/components/RegistrationForm";
 
@@ -73,7 +71,7 @@ export default {
       this.$store.dispatch('sendReservations').then(() => {
             this.$store.commit('clearGuests');
             this.$router.push({name: 'confirmation'});
-          }, () => this.$router.push({name: 'error'}));
+          }, reason => this.$router.push({name: 'error', params: {errorCode: reason.response.data.id}}));
     },
     deleteGuest(guestId) {
       console.log(guestId)

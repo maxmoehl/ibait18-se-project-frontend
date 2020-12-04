@@ -22,13 +22,22 @@
 </template>
 
 <script>
-import RegistrationConfirmation from "@/components/RegistrationConfirmation";
 import BookingCode from "@/components/BookingCode";
 
+/**
+ * This view displays a success message and a booking code for each reservation that was created.
+ * The booking codes are displayed as a qrcode and a string along with the name of the person the
+ * code is valid for
+ *
+ * @see @/components/BookingCode.vue
+ */
 export default {
   name: "Confirmation",
-  components: {BookingCode, RegistrationConfirmation},
+  components: {BookingCode},
   computed: {
+    /**
+     * Always represents the confirmations currently stored in our shared state
+     */
     confirmations() {
       return this.$store.state.confirmations;
     }
