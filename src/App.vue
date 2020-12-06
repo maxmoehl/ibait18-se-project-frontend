@@ -29,6 +29,11 @@
             <span class="md-list-item-text">Datenschutz</span>
           </md-list-item>
 
+          <md-list-item class="navigation-link" @click="navTo('legal')">
+            <md-icon>text_snippet</md-icon>
+            <span class="md-list-item-text">Impressum</span>
+          </md-list-item>
+
           <md-list-item v-if="$store.state.loggedIn" class="navigation-link" @click="navTo('admin')">
             <md-icon>admin_panel_settings</md-icon>
             <span class="md-list-item-text">Administration</span>

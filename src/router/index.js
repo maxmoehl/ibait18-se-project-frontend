@@ -14,6 +14,7 @@ import FAQ from "@/views/FAQ";
 import Privacy from "@/views/Privacy";
 import Reservations from "@/views/Reservations";
 import Error from "@/views/Error";
+import Legal from "@/views/Legal";
 
 // Bind router to vue runtime
 Vue.use(VueRouter);
@@ -98,6 +99,14 @@ const routes = [
             login: false
         },
         props: true
+    },
+    {
+        path: '/legal',
+        name: 'legal',
+        component: Legal,
+        meta: {
+            login: false
+        }
     }
 ]
 

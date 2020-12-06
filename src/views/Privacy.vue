@@ -2,6 +2,9 @@
   <div class="privacy">
     <div class="md-title">Datenschutzerklärung</div>
     <p>
+      Bitte beachten Sie den Hinweis in unserem <a href="/legal">Impressum</a>.
+    </p>
+    <p>
       Die Nachfolgende Erklärung erläutert nach Art. 6 EU-DSGVO die Verwendung von personenbezogenen Daten auf dieser
       Webseite.
     </p>
