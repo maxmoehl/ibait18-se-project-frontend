@@ -8,32 +8,38 @@
 
         <md-card-content>
           <div class="md-layout md-gutter">
-            <div class="md-layout-item md-xsmall-size-100 md-small-size-33 md-medium-size-20 md-large-size-20 md-xlarge-size-20">
+            <div
+                class="md-layout-item md-xsmall-size-100 md-small-size-33 md-medium-size-20 md-large-size-20 md-xlarge-size-20">
               <md-field>
                 <label for="name">Name</label>
                 <md-input id="name" name="name" v-model="filter.name"/>
               </md-field>
             </div>
-            <div class="md-layout-item md-xsmall-size-100 md-small-size-33 md-medium-size-20 md-large-size-20 md-xlarge-size-20">
+            <div
+                class="md-layout-item md-xsmall-size-100 md-small-size-33 md-medium-size-20 md-large-size-20 md-xlarge-size-20">
               <md-field>
                 <label for="city">Stadt</label>
                 <md-input id="city" name="city" v-model="filter.city"/>
               </md-field>
             </div>
-            <div class="md-layout-item md-xsmall-size-100 md-small-size-33 md-medium-size-20 md-large-size-20 md-xlarge-size-20">
+            <div
+                class="md-layout-item md-xsmall-size-100 md-small-size-33 md-medium-size-20 md-large-size-20 md-xlarge-size-20">
               <md-datepicker v-model="filter.date">
                 <label>
                   Datum
                 </label>
               </md-datepicker>
             </div>
-            <div class="md-layout-item md-xsmall-size-100 md-small-size-33 md-medium-size-20 md-large-size-20 md-xlarge-size-20">
+            <div
+                class="md-layout-item md-xsmall-size-100 md-small-size-33 md-medium-size-20 md-large-size-20 md-xlarge-size-20">
               <md-field>
                 <label for="time">HH:MM</label>
-                <md-input id="time" name="time" v-model="filter.time" placeholder="Uhrzeit" :disabled="filter.date === null"/>
+                <md-input id="time" name="time" v-model="filter.time" placeholder="Uhrzeit"
+                          :disabled="filter.date === null"/>
               </md-field>
             </div>
-            <div class="md-layout-item md-xsmall-size-100 md-small-size-20 md-medium-size-20 md-large-size-20 md-xlarge-size-20">
+            <div
+                class="md-layout-item md-xsmall-size-100 md-small-size-20 md-medium-size-20 md-large-size-20 md-xlarge-size-20">
               <md-field>
                 <label for="limit">Max. Einträge</label>
                 <md-select id="limit" name="limit" v-model="filter.limit">
@@ -47,7 +53,8 @@
                 </md-select>
               </md-field>
             </div>
-            <div class="md-layout-item md-xsmall-size-100 md-small-size-45 md-medium-size-40 md-large-size-40 md-xlarge-size-40">
+            <div
+                class="md-layout-item md-xsmall-size-100 md-small-size-45 md-medium-size-40 md-large-size-40 md-xlarge-size-40">
               <md-checkbox v-model="filter.onlyPastReservations">
                 Zukünftige Reservierungen ausblenden
               </md-checkbox>
@@ -56,12 +63,8 @@
         </md-card-content>
 
         <md-card-actions>
-          <md-button class="md-primary" @click="dialogs.helpOpen = true">
-            Hilfe
-          </md-button>
-          <md-button class="md-primary" @click="updateReservations">
-            Aktualisieren
-          </md-button>
+          <md-button class="md-primary" @click="dialogs.helpOpen = true">Hilfe</md-button>
+          <md-button class="md-primary" @click="updateReservations">Aktualisieren</md-button>
         </md-card-actions>
       </md-card>
     </div>
@@ -107,14 +110,16 @@
 
     <md-dialog class="help-dialog" :md-active.sync="dialogs.helpOpen">
       <md-dialog-title>
-        <div class="md-title">Filter Hilfe</div>
+        <div class="md-title">Unterstützung bei Filtern</div>
       </md-dialog-title>
 
       <md-dialog-content>
-        Um die Uhrzeit zu setzen ist zuerst ein Datum nötig.<br>
-        Wenn ein Datum gesetzt ist werden nur reservierungen nur für diesen tag angezeigt<br>
-        Die Filter werden automatisch angewendet.<br>
-        Über den "AKTUALISIEREN" Button können die Reservierungen erneut vom Server geladen werden.
+        Mithilfe der "Filtern"-Funktionalität haben Sie die Möglichkeit, die gespeicherten Besucherdaten auf bestimmte
+        Namen, Wohnorte oder auf den Veranstaltungszeitraum einzugrenzen. Die Filter werden bei der Eingabe / Auswahl
+        automatisch angewendet, ein erneutes Laden der Seite ist nicht erforderlich.<br>
+        Bitte beachten Sie, dass das Filtern nach einer bestimmten Uhrzeit erst nach Eingabe eines konkreten Datums
+        möglich ist.<br><br>
+        Die Schaltfläche "Aktualisieren" ermöglicht das Laden der aktuellsten Reservierungsdaten vom Server.
       </md-dialog-content>
 
       <md-dialog-actions>

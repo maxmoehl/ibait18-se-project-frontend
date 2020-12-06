@@ -33,9 +33,7 @@
         </md-card-content>
 
         <md-card-actions>
-          <md-button class="md-primary" @click="updateTimeSlots">
-            Aktualisieren
-          </md-button>
+          <md-button class="md-primary" @click="updateTimeSlots">Aktualisieren</md-button>
         </md-card-actions>
       </md-card>
     </div>

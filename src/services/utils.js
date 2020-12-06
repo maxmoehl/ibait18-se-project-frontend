@@ -100,7 +100,7 @@ export function exportToCsv(data) {
     let hiddenElement = document.createElement('a');
     hiddenElement.href = 'data:text/csv;charset=utf-8,' + csvData;
     hiddenElement.target = '_blank';
-    hiddenElement.download = 'people.csv';
+    hiddenElement.download = 'export.csv';
     hiddenElement.click();
 }
 

@@ -11,7 +11,7 @@
       <md-card-header>
         <div>
           {{ index + 1 }}. {{ guest.name }}
-          <md-icon @click.native="deleteGuest(index)" class="remove-guest">delete</md-icon>
+          <md-icon @click.native="openDeleteGuestDialog(index)" class="remove-guest">delete</md-icon>
         </div>
       </md-card-header>
     </md-card>
@@ -27,7 +27,18 @@
 
     <RegistrationForm :time-slot-id="timeSlotId" :active.sync="registrationDialogOpen"/>
 
-    <!-- TODO Add a dialog to confirm deletion of a guest -->
+    <md-dialog class="delete-guest-dialog" :md-active.sync="this.deletionDialogOpen">
+      <md-dialog-title>
+        Gast löschen
+      </md-dialog-title>
+      <md-dialog-content>
+        Sind Sie sicher, dass Sie den Gast <b>{{deleteGuestName}}</b> löschen möchten?
+      </md-dialog-content>
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="closeDeleteGuestDialog">Abbrechen</md-button>
+        <md-button class="md-primary" @click="deleteGuest">Löschen</md-button>
+      </md-dialog-actions>
+    </md-dialog>
 
     <md-button class="md-raised send-guests md-primary" :disabled="!atLeastOneGuestPresent"
                @click="registerReservations">
@@ -48,7 +59,9 @@ export default {
   },
   data: () => {
     return {
-      registrationDialogOpen: false
+      registrationDialogOpen: false,
+      deletionDialogOpen: false,
+      deletionGuestId: -1
     };
   },
   computed: {
@@ -64,6 +77,12 @@ export default {
     },
     atLeastOneGuestPresent() {
       return this.$store.state.guests.length > 0;
+    },
+    deleteGuestName() {
+      if (this.deletionGuestId < 0) {
+        return '';
+      }
+      return this.$store.state.guests[this.deletionGuestId].name
     }
   },
   methods: {
@@ -73,9 +92,17 @@ export default {
             this.$router.push({name: 'confirmation'});
           }, reason => this.$router.push({name: 'error', params: {errorCode: reason.response.data.id}}));
     },
-    deleteGuest(guestId) {
-      console.log(guestId)
-      this.$store.commit('deleteGuest', guestId);
+    openDeleteGuestDialog(guestId) {
+      this.deletionGuestId = guestId;
+      this.deletionDialogOpen = true;
+    },
+    closeDeleteGuestDialog() {
+      this.deletionGuestId = -1;
+      this.deletionDialogOpen = false;
+    },
+    deleteGuest() {
+      this.$store.commit('deleteGuest', this.deletionGuestId);
+      this.closeDeleteGuestDialog();
     }
   }
 }
