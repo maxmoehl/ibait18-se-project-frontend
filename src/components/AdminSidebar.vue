@@ -10,6 +10,11 @@
         <md-icon>event</md-icon> Reservierungen verwalten
       </md-card-header>
     </md-card>
+    <md-card @click.native="$router.push({name: 'validation'})" class="create-timeslot">
+      <md-card-header>
+        <md-icon>how_to_reg</md-icon> Reservierungen kontrollieren
+      </md-card-header>
+    </md-card>
 
 
     <md-dialog class="new-timeslot-dialog" :md-active.sync="createDialogOpen">
@@ -44,6 +49,8 @@
         <md-button class="md-primary" @click="addTimeSlot">Hinzufügen</md-button>
       </md-dialog-actions>
     </md-dialog>
+
+    <error-dialog :active.sync="errorDialog.open" :error-code="errorDialog.errorCode"/>
   </div>
 </template>
 
@@ -51,12 +58,14 @@
 import axios from 'axios';
 import {required, minValue} from 'vuelidate/lib/validators'
 import {mustBeTime, convertToDate} from "@/services/utils";
+import ErrorDialog from "@/components/ErrorDialog";
 
 /**
  * Gives the user access to admin functionality: Creating new time slots and accessing the reservations.
  */
 export default {
   name: "AdminSidebar",
+  components: {ErrorDialog},
   data() {
     return {
       createDialogOpen: false,
@@ -65,6 +74,10 @@ export default {
         startTime: null,
         endTime: null,
         capacity: null
+      },
+      errorDialog: {
+        open: false,
+        errorCode: ''
       }
     }
   },
@@ -115,8 +128,8 @@ export default {
           peopleCount: this.createDialogForm.capacity
         }
       }).then(() => this.$store.dispatch('loadTimeSlots'), reason => {
-        console.warn(reason);
-        // TODO something like a popup to inform the user what went wrong
+        this.errorDialog.errorCode = reason.response.data.id;
+        this.errorDialog.open = true;
       })
       this.closeCreateTimeSlotDialog();
     },

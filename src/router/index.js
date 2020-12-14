@@ -15,6 +15,8 @@ import Privacy from "@/views/Privacy";
 import Reservations from "@/views/Reservations";
 import Error from "@/views/Error";
 import Legal from "@/views/Legal";
+import ValidateReservations from "@/views/ValidateReservations";
+import QRCode from "@/views/QRCode";
 
 // Bind router to vue runtime
 Vue.use(VueRouter);
@@ -104,6 +106,23 @@ const routes = [
         path: '/legal',
         name: 'legal',
         component: Legal,
+        meta: {
+            login: false
+        }
+    },
+    {
+        path: '/admin/validation',
+        name: 'validation',
+        component: ValidateReservations,
+        meta: {
+            login: true
+        }
+    },
+    {
+        path: '/qrcode/:code',
+        name: 'qrcode',
+        component: QRCode,
+        props: true,
         meta: {
             login: false
         }

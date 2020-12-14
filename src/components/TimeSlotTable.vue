@@ -169,6 +169,9 @@ export default {
     }
   },
   computed: {
+    /**
+     * Returns all time slots that match the current filter set.
+     */
     timeSlots() {
       let dateRangeStart, dateRangeEnd = 0
       if (this.filter.date !== null) {
@@ -183,6 +186,9 @@ export default {
         return true;
       });
     },
+    /**
+     * Returns the description for the time slot deletion dialog
+     */
     deleteTimeSlotDescription() {
       if (this.deleteTimeSlot.timeSlotId === null || this.deleteTimeSlot.timeSlotId === '') {
         return '';
@@ -195,6 +201,9 @@ export default {
     }
   },
   methods: {
+    /**
+     * Opens a dialog to edit a time slot.
+     */
     openEditDialog(timeSlotId) {
       console.log(timeSlotId);
       this.editTimeSlot.open = true;
@@ -205,6 +214,9 @@ export default {
       this.editTimeSlot.endTime = convertToClockTime(new Date(timeSlot.endDate));
       this.editTimeSlot.capacity = timeSlot.peopleCount;
     },
+    /**
+     * Closes the edit dialog.
+     */
     closeEditDialog() {
       this.editTimeSlot.open = false;
       this.editTimeSlot.timeSlotId = null;
@@ -213,6 +225,10 @@ export default {
       this.editTimeSlot.endTime = null;
       this.editTimeSlot.capacity = null;
     },
+    /**
+     * Confirms changes made in the edit dialog and tries to update the database through the API and closes the edit
+     * dialog.
+     */
     confirmEditDialog() {
       this.$store.dispatch('updateTimeSlot', {
         _id: this.editTimeSlot.timeSlotId,
@@ -224,10 +240,16 @@ export default {
         this.closeEditDialog();
       })
     },
+    /**
+     * Opens a dialog to export a time slot.
+     */
     openExportDialog(timeSlotId) {
       this.exportTimeSlot.open = true;
       this.exportTimeSlot.timeSlotId = timeSlotId;
     },
+    /**
+     * Opens a dialog to delete a time slot
+     */
     openDeleteDialog(timeSlotId) {
       this.deleteTimeSlot.open = true;
       this.deleteTimeSlot.timeSlotId = timeSlotId;

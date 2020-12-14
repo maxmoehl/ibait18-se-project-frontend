@@ -5,6 +5,7 @@
     </md-dialog-title>
 
     <md-dialog-content>
+      <span>Bitte füllen Sie alle Felder aus und stimmen Sie der Datenverarbeitung am Ende des Formulars zu.</span>
       <md-field :class="getValidationClass('name')">
         <label for="name">Name</label>
         <md-input name="name" id="name" v-model="form.name" autocomplete="name"/>

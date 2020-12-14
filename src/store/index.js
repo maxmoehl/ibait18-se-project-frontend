@@ -99,10 +99,21 @@ export default new Vuex.Store({
             return null;
         },
         /**
-         * Returns all reservations for a certain timeslot
+         * Returns all reservations for a certain timeslot.
          */
         reservations: state => timeSlotId => {
             return state.reservations.filter(res => res.timeSlot._id === timeSlotId);
+        },
+        /**
+         * Returns a single reservation for the given bookingCode or null if no reservation is found.
+         */
+        reservation: state => bookingCode => {
+            for (let i = 0; i < state.reservations.length; i++) {
+                if (state.reservations[i].bookingCode === bookingCode) {
+                    return state.reservations[i];
+                }
+            }
+            return null;
         }
     },
     /**
@@ -223,6 +234,15 @@ export default new Vuex.Store({
             method: 'get'
         }).then(res => {
             context.dispatch('setAuthToken', res.data.token).then();
+            context.dispatch('loadReservations').then();
+        }),
+        /**
+         * Book a single reservation and reload reservations to update data.
+         */
+        bookReservation: (context, bookingCode) => axios({
+            url: `/api/reservations/book/${bookingCode}`,
+            method: 'patch'
+        }).then(() => {
             context.dispatch('loadReservations').then();
         })
     }

@@ -64,6 +64,7 @@
 
         <md-card-actions>
           <md-button class="md-primary" @click="dialogs.helpOpen = true">Hilfe</md-button>
+          <md-button class="md-primary" @click="dialogs.exportSelectionOpen = true">Exportieren</md-button>
           <md-button class="md-primary" @click="updateReservations">Aktualisieren</md-button>
         </md-card-actions>
       </md-card>
@@ -106,7 +107,7 @@
       </md-table-empty-state>
     </md-table>
 
-    <ExportDialog :active.sync="dialogs.exportOpen" :time-slot-id="dialogs.timeSlotId"/>
+    <ExportDialog :active.sync="dialogs.exportTimeSlotOpen" :time-slot-id="dialogs.timeSlotId"/>
 
     <md-dialog class="help-dialog" :md-active.sync="dialogs.helpOpen">
       <md-dialog-title>
@@ -123,16 +124,27 @@
       </md-dialog-content>
 
       <md-dialog-actions>
-        <md-button class="md-primary" @click="dialogs.helpOpen = false">
-          Schließen
-        </md-button>
+        <md-button class="md-primary" @click="dialogs.helpOpen = false">Schließen</md-button>
+      </md-dialog-actions>
+    </md-dialog>
+
+    <md-dialog class="export-selection-dialog" :md-active.sync="dialogs.exportSelectionOpen">
+      <md-dialog-title>
+        <div class="md-title">Export</div>
+      </md-dialog-title>
+      <md-dialog-content>
+        Der Export Ihrer aktuellen Auswahl steht bereit.
+      </md-dialog-content>
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="exportSelectionOpen = false">Abbrechen</md-button>
+        <md-button class="md-primary" @click="exportSelection">Herunterladen</md-button>
       </md-dialog-actions>
     </md-dialog>
   </div>
 </template>
 
 <script>
-import utils from "@/services/utils";
+import {exportToCsv, time, getTimeSlotDescription} from "@/services/utils";
 import ExportDialog from "@/components/ExportDialog";
 
 export default {
@@ -149,7 +161,8 @@ export default {
         onlyPastReservations: true
       },
       dialogs: {
-        exportOpen: false,
+        exportTimeSlotOpen: false,
+        exportSelectionOpen: false,
         deleteOpen: false,
         helpOpen: false,
         timeSlotId: null
@@ -168,10 +181,10 @@ export default {
       let dateRangeStart, dateRangeEnd = 0;
       if (this.filter.date !== null) {
         dateRangeStart = this.filter.date.valueOf();
-        dateRangeEnd = dateRangeStart + utils.time.d;
+        dateRangeEnd = dateRangeStart + time.d;
         if (/^\d{1,2}:\d{1,2}$/.test(this.filter.time)) {
           let t = this.filter.time.split(':');
-          dateRangeStart += utils.time.h * t[0] * utils.time.m * t[1];
+          dateRangeStart += time.h * t[0] * time.m * t[1];
         }
       }
 
@@ -190,19 +203,25 @@ export default {
     clearFilters() {
       this.filter.name = '';
       this.filter.city = '';
+      this.filter.date = null;
+      this.filter.time = '';
     },
     updateReservations() {
       this.$store.dispatch('loadReservations');
     },
     getTimeSlotDescription(timeSlot) {
-      return utils.getTimeSlotDescription(timeSlot);
+      return getTimeSlotDescription(timeSlot);
     },
     openDeleteDialog(reservationCode) {
 
     },
     openExportDialog(timeSlotId) {
       this.dialogs.timeSlotId = timeSlotId;
-      this.dialogs.exportOpen = true;
+      this.dialogs.exportTimeSlotOpen = true;
+    },
+    exportSelection() {
+      exportToCsv(this.reservations);
+      this.dialogs.exportSelectionOpen = false
     }
   }
 }
