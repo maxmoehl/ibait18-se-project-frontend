@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div @click>
+    <div @click="openScanner">
       <md-card>
         <md-card-header>
           <md-icon>qr_code_scanner</md-icon> QR-Code-Scanner öffnen
