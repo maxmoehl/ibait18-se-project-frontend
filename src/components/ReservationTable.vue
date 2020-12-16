@@ -53,10 +53,14 @@
                 </md-select>
               </md-field>
             </div>
-            <div
-                class="md-layout-item md-xsmall-size-100 md-small-size-45 md-medium-size-40 md-large-size-40 md-xlarge-size-40">
+            <div class="md-layout-item md-xsmall-size-100 md-small-size-45 md-medium-size-40 md-large-size-40 md-xlarge-size-40">
               <md-checkbox v-model="filter.onlyPastReservations">
                 Zukünftige Reservierungen ausblenden
+              </md-checkbox>
+            </div>
+            <div class="md-layout-item md-xsmall-size-100 md-small-size-45 md-medium-size-40 md-large-size-40 md-xlarge-size-40">
+              <md-checkbox v-model="filter.onlyAttendedReservations">
+                Nicht gebuchte Reservierungen ausblenden
               </md-checkbox>
             </div>
           </div>
@@ -94,7 +98,7 @@
           <md-button class="md-icon-button" @click="openExportDialog(item.timeSlot._id)">
             <md-icon>cloud_download</md-icon>
           </md-button>
-          <md-button class="md-icon-button">
+          <md-button class="md-icon-button" @click="openDeleteDialog(item.bookingCode)">
             <md-icon>delete</md-icon>
           </md-button>
         </md-table-cell>
@@ -133,23 +137,44 @@
         <div class="md-title">Export</div>
       </md-dialog-title>
       <md-dialog-content>
-        Der Export Ihrer aktuellen Auswahl steht bereit.
+        Der Export Ihrer aktuellen Auswahl steht bereit.<br><br>
+        <span style="color:red">Gäste die (noch) nicht anwesend waren werden nicht im Export enthalten sein!</span><br><br>
+        <a href="/admin/help">Wie kann ich die exportierte Datei öffnen?</a>
       </md-dialog-content>
       <md-dialog-actions>
-        <md-button class="md-primary" @click="exportSelectionOpen = false">Abbrechen</md-button>
+        <md-button class="md-primary" @click="dialogs.exportSelectionOpen = false">Abbrechen</md-button>
         <md-button class="md-primary" @click="exportSelection">Herunterladen</md-button>
       </md-dialog-actions>
     </md-dialog>
+
+    <md-dialog class="deletion-dialog" :md-active.sync="dialogs.deleteOpen">
+      <md-dialog-title>
+        <div class="md-title">Löschen</div>
+      </md-dialog-title>
+
+      <md-dialog-content>
+        Sie sind im Begriff die Reservierung mit dem Buchungscode {{dialogs.deletionBookingCode}} für die Person
+        {{deletionReservation.name}} zu löschen.
+      </md-dialog-content>
+
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="closeDeleteDialog">Abbrechen</md-button>
+        <md-button class="md-primary" @click="confirmDeleteDialog">Löschen</md-button>
+      </md-dialog-actions>
+    </md-dialog>
+
+    <error-dialog :active.sync="dialogs.errorOpen" :error-code="dialogs.errorCode"/>
   </div>
 </template>
 
 <script>
 import {exportToCsv, time, getTimeSlotDescription} from "@/services/utils";
 import ExportDialog from "@/components/ExportDialog";
+import ErrorDialog from "@/components/ErrorDialog";
 
 export default {
   name: "ReservationTable",
-  components: {ExportDialog},
+  components: {ErrorDialog, ExportDialog},
   data() {
     return {
       filter: {
@@ -158,14 +183,18 @@ export default {
         date: null,
         time: '',
         limit: 100,
-        onlyPastReservations: true
+        onlyPastReservations: true,
+        onlyAttendedReservations: true
       },
       dialogs: {
         exportTimeSlotOpen: false,
         exportSelectionOpen: false,
         deleteOpen: false,
         helpOpen: false,
-        timeSlotId: null
+        timeSlotId: null,
+        deletionBookingCode: null,
+        errorOpen: false,
+        errorCode: null,
       }
     }
   },
@@ -195,8 +224,13 @@ export default {
         if (dateRangeStart !== 0 && reservation.timeSlot.startDate < dateRangeStart) return false;
         if (dateRangeEnd !== 0 && reservation.timeSlot.endDate > dateRangeEnd) return false;
         if (this.filter.onlyPastReservations && reservation.timeSlot.endDate >= Date.now()) return false;
+        if (this.filter.onlyAttendedReservations && reservation.attended === false) return false;
         return true;
       });
+    },
+    deletionReservation() {
+      let r = this.$store.getters.reservation(this.dialogs.deletionBookingCode);
+      return r === null ? {name: ''} : r;
     }
   },
   methods: {
@@ -212,8 +246,20 @@ export default {
     getTimeSlotDescription(timeSlot) {
       return getTimeSlotDescription(timeSlot);
     },
-    openDeleteDialog(reservationCode) {
-
+    openDeleteDialog(bookingCode) {
+      this.dialogs.deletionBookingCode = bookingCode;
+      this.dialogs.deleteOpen = true;
+    },
+    closeDeleteDialog() {
+      this.dialogs.deletionBookingCode = null;
+      this.dialogs.deleteOpen = false;
+    },
+    confirmDeleteDialog() {
+      this.$store.dispatch('deleteReservation', this.dialogs.deletionBookingCode).catch(reason => {
+        this.dialogs.errorCode = reason.response.id;
+        this.dialogs.errorOpen = true;
+      });
+      this.closeDeleteDialog();
     },
     openExportDialog(timeSlotId) {
       this.dialogs.timeSlotId = timeSlotId;

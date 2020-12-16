@@ -244,6 +244,13 @@ export default new Vuex.Store({
             method: 'patch'
         }).then(() => {
             context.dispatch('loadReservations').then();
+        }),
+        deleteReservation: (context, bookingCode) => axios({
+            url: `/api/reservations/${bookingCode}`,
+            method: 'delete'
+        }).then(() => {
+            context.dispatch('loadReservations').then();
+            context.dispatch('loadTimeSlots').then();
         })
     }
 });

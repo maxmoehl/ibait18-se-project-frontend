@@ -17,6 +17,7 @@ import Error from "@/views/Error";
 import Legal from "@/views/Legal";
 import ValidateReservations from "@/views/ValidateReservations";
 import QRCode from "@/views/QRCode";
+import ExportHelp from "@/views/ExportHelp";
 
 // Bind router to vue runtime
 Vue.use(VueRouter);
@@ -123,6 +124,14 @@ const routes = [
         name: 'qrcode',
         component: QRCode,
         props: true,
+        meta: {
+            login: false
+        }
+    },
+    {
+        path: '/admin/help',
+        name: 'export-help',
+        component: ExportHelp,
         meta: {
             login: false
         }

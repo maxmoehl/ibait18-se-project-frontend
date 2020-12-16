@@ -1,15 +1,23 @@
 <template>
-  <div class="md-layout">
-    <div class="md-layout-item md-size-80">
-      <md-field>
-        <label for="booking-code">Buchungscode</label>
-        <md-input id="booking-code" name="booking-code" v-model="bookingCode"/>
-      </md-field>
+  <div>
+    <div @click>
+      <md-card>
+        <md-card-header>
+          <md-icon>qr_code_scanner</md-icon> QR-Code-Scanner öffnen
+        </md-card-header>
+      </md-card>
     </div>
-    <div class="md-layout-item md-size-20">
-
+    <div class="md-layout">
+      <div class="md-layout-item md-size-80">
+        <md-field>
+          <label for="booking-code">Buchungscode</label>
+          <md-input id="booking-code" name="booking-code" v-model="bookingCode"/>
+        </md-field>
+      </div>
+      <div class="md-layout-item md-size-20">
+        <md-button @click="openConfirmationDialog" class="md-primary">Validieren</md-button>
+      </div>
     </div>
-    <md-button @click="openConfirmationDialog">Validieren</md-button>
 
     <md-dialog :md-active.sync="confirmationDialog">
       <md-dialog-title>
@@ -19,43 +27,43 @@
       <md-dialog-content>
         <p>
           <b>Zeitfenster:</b><br>
-          {{timeSlotDescription}}
+          {{ timeSlotDescription }}
         </p>
         <p>
           <b>Name:</b><br>
-          {{reservation.name}}
+          {{ reservation.name }}
         </p>
         <p>
           <b>E-Mail-Adresse:</b><br>
-          {{reservation.email}}
+          {{ reservation.email }}
         </p>
         <p>
           <b>Telefonnummer:</b><br>
-          {{reservation.phone}}
+          {{ reservation.phone }}
         </p>
         <p>
           <b>1. Adresszeile:</b><br>
-          {{reservation.addressLineOne}}
+          {{ reservation.addressLineOne }}
         </p>
         <p v-if="reservation.addressLineTwo !== ''">
           <b>2. Adresszeile:</b><br>
-          {{reservation.addressLineTwo}}
+          {{ reservation.addressLineTwo }}
         </p>
         <p>
           <b>Stadt:</b><br>
-          {{reservation.city}}
+          {{ reservation.city }}
         </p>
         <p>
           <b>PLZ:</b><br>
-          {{reservation.zipCode}}
+          {{ reservation.zipCode }}
         </p>
         <p>
           <b>Land:</b><br>
-          {{reservation.country}}
+          {{ reservation.country }}
         </p>
         <p>
           <b>Gebucht:</b><br>
-          {{reservation.attended ? 'Ja' : 'Nein'}}
+          {{ reservation.attended ? 'Ja' : 'Nein' }}
         </p>
       </md-dialog-content>
 
@@ -72,6 +80,7 @@
 <script>
 import {getTimeSlotDescription} from "@/services/utils";
 import ErrorDialog from "@/components/ErrorDialog";
+import QRScanner from "qr-code-scanner";
 
 export default {
   name: "CodeValidation",
@@ -137,11 +146,24 @@ export default {
       this.reservation.country = '';
       this.reservation.attended = true;
       this.reservation.timeSlot = null;
-      this.confirmationDialog = true;
+      this.confirmationDialog = false;
     },
     bookReservation() {
       this.$store.dispatch('bookReservation', this.bookingCode);
       this.closeConfirmationDialog();
+    },
+    openScanner() {
+      QRScanner.initiate({
+        match: /[A-Z0-9]{8}/,
+        onResult: (result) => {
+          this.bookingCode = result;
+        },
+        onError: function (reason) {
+          console.warn('error occurred');
+          console.warn(reason);
+        },
+        timeout: 10000
+      });
     }
   }
 }

@@ -1,17 +1,15 @@
 <template>
   <div class="validation">
-    <q-r-code-scanner></q-r-code-scanner>
     <code-validation></code-validation>
   </div>
 </template>
 
 <script>
-import QRCodeScanner from "@/components/QRCodeScanner";
 import CodeValidation from "@/components/CodeValidation";
 
 export default {
   name: "ValidateReservations",
-  components: {CodeValidation, QRCodeScanner},
+  components: {CodeValidation},
   /**
    * Before the component gets created we trigger a check whether or not the user is still logged in.
    * If not we re-route to the login page. Same goes for the admin and reservations view.

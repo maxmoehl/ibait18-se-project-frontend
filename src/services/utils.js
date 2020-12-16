@@ -81,6 +81,10 @@ export function exportToCsv(data) {
     // be more user friendly
     let reservations = [];
     for (let i = 0; i < data.length; i++) {
+        // We only export reservations for guests that actually attended
+        if (!data[i].attended) {
+            continue;
+        }
         reservations.push({
             'Buchungscode': data[i].bookingCode,
             'Name': data[i].name,
