@@ -245,6 +245,9 @@ export default new Vuex.Store({
         }).then(() => {
             context.dispatch('loadReservations').then();
         }),
+        /**
+         * Delete a single reservation and reload reservations and time slots.
+         */
         deleteReservation: (context, bookingCode) => axios({
             url: `/api/reservations/${bookingCode}`,
             method: 'delete'

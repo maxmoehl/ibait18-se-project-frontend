@@ -146,6 +146,7 @@ export default {
       this.reservation.country = '';
       this.reservation.attended = true;
       this.reservation.timeSlot = null;
+      this.bookingCode = '';
       this.confirmationDialog = false;
     },
     bookReservation() {
