@@ -10,7 +10,7 @@
     <p>
       Bitte beachten Sie bei Ihrem Besuch jederzeit die geltenden Hygienevorschriften und halten Sie sich an die
       Anweisungen des Personals vor Ort. Weitere Hinweise zur Reservierung und Ihrem Besuch bei uns erhalten Sie in
-      unseren Häufig gestellten Fragen (FAQ).
+      unseren <a href="/faq">Häufig gestellten Fragen (FAQ)</a>.
     </p>
     <p>
       Bitte speichern Sie den Buchungscode und halten Sie ihn bei Ankunft bereit, damit unser Personal
