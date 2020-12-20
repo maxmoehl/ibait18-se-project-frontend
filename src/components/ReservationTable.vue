@@ -138,7 +138,7 @@
       </md-dialog-title>
       <md-dialog-content>
         Der Export Ihrer aktuellen Auswahl steht bereit.<br><br>
-        <span style="color:red">Gäste die (noch) nicht anwesend waren werden nicht im Export enthalten sein!</span><br><br>
+        <span style="color:red">Gäste, die (noch) nicht anwesend waren, werden nicht im Export enthalten sein!</span><br><br>
         <a href="/admin/help">Wie kann ich die exportierte Datei öffnen?</a>
       </md-dialog-content>
       <md-dialog-actions>
