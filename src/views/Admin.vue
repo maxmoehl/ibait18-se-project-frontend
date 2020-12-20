@@ -1,7 +1,7 @@
 <template>
   <md-content>
     <div class="main-content md-layout md-gutter">
-      <AdminSidebar class="md-layout-item md-size-25"/>
+      <AdminSidebar class="md-layout-item md-xsmall-size-100 md-small-size-100 md-medium-size-25 md-large-size-25 md-xlarge-size-25"/>
       <TimeSlotTable class="md-layout-item"></TimeSlotTable>
     </div>
   </md-content>
