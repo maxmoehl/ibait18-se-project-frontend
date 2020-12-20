@@ -1,5 +1,5 @@
 <template>
-  <md-dialog :md-active.sync="active">
+  <md-dialog :md-active="active" @update:mdActive="closeDialog">
     <md-dialog-title>
       Neuer Gast
     </md-dialog-title>
