@@ -11,11 +11,11 @@
     <p><b>1. Dienstbetreiber und Verantwortlicher</b></p>
     <p>
       Verantwortlich im Sinne der Datenschutz-Grundverordnung und der gleichermaßen geltenden nationalen
-      Datenschutzgesetze von Mitgliedstaaten der Europäischen Union ist:
+      Datenschutzgesetze von Mitgliedstaaten der Europäischen Union ist: <a href="mailto:contact@moehl.eu">contact@moehl.eu</a>
     </p>
     <p><b>2. Datenschutzbeauftragter</b></p>
     <p>
-      Als Datenschutzbeauftragter wird die folgende Person bemächtigt:
+      Als Datenschutzbeauftragter wird die folgende Person bemächtigt: <a href="mailto:contact@moehl.eu">contact@moehl.eu</a>
     </p>
     <p><b>3. Umfang der Verarbeitung personenbezogener Daten</b></p>
     <p>
